@@ -3871,6 +3871,15 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.actionPipeline = QtWidgets.QAction(MainWindow)
+        self.actionPipeline.setObjectName("actionPipeline")
+        self.actionODM = QtWidgets.QAction(MainWindow)
+        self.actionODM.setObjectName("actionODM")
+        self.actionTree_Detection = QtWidgets.QAction(MainWindow)
+        self.actionTree_Detection.setObjectName("actionTree_Detection")
+        self.menuHelp.addAction(self.actionPipeline)
+        self.menuHelp.addAction(self.actionODM)
+        self.menuHelp.addAction(self.actionTree_Detection)
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -4309,7 +4318,10 @@ class Ui_MainWindow(object):
         self.buttonRestoreSettings.setText(_translate("MainWindow", "Restore Default Settings"))
         self.buttonStartProcessing.setText(_translate("MainWindow", "Start Processing"))
         self.label_81.setText(_translate("MainWindow", "Status Display"))
-        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Documentation"))
+        self.actionPipeline.setText(_translate("MainWindow", "Pipeline..."))
+        self.actionODM.setText(_translate("MainWindow", "ODM..."))
+        self.actionTree_Detection.setText(_translate("MainWindow", "Tree Detection..."))
 
 
 if __name__ == "__main__":
