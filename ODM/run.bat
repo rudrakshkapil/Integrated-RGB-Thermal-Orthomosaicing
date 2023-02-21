@@ -20,4 +20,4 @@ winrun.bat %* <NUL
 endlocal
 
 @REM TODO: generalize
-call conda activate cynthia
+call conda activate integrated_rgb_thermal_ortho

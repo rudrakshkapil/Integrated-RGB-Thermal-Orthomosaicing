@@ -10,4 +10,4 @@ start "ODM Console" cmd /k "echo  ____________________________ && echo /   ____ 
 
 endlocal
 
-call conda activate cynthia
+call conda activate integrated_rgb_thermal_ortho

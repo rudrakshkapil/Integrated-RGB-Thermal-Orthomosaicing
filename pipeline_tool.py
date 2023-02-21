@@ -2,7 +2,7 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from GUI_generated import Ui_MainWindow
 import sys
-from mosaic_cfg_trial import main_fn as pipeline_process
+from mosaic import main_fn as pipeline_process
 import re
 import pprint
 import yaml
