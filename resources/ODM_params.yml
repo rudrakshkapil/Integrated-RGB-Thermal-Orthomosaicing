@@ -1,0 +1,93 @@
+3d-tiles:
+auto-boundary:
+auto-boundary-distance: float
+boundary:
+build-overviews:
+camera-lens: str
+cameras:
+cog:
+copy-to:
+crop: float
+debug:
+dem-decimation: int
+dem-euclidean-map:
+dem-gapfill-steps: int
+dem-resolution: float
+depthmap-resolution: float
+dsm:
+dtm:
+end-with: str
+fast-orthophoto: 
+feature-quality: str
+feature-type: str
+force-gps:
+gcp: str
+geo: str
+gltf:
+gps-accuracy: float
+ignore-gsd:
+matcher-neighbors: int
+matcher-type: str
+max-concurrency: int
+merge: str
+mesh-octree-depth: int
+mesh-size: int
+min-num-features: int
+no-gpu:
+orthophoto-compression: str
+orthophoto-cutline:
+orthophoto-kmz:
+orthophoto-no-tiled:
+orthophoto-png:
+orthophoto-resolution: float
+pc-classify:
+pc-copc:
+pc-csv:
+pc-ept:
+pc-filter: float
+pc-geometric:
+pc-las:
+pc-quality: str
+pc-rectify:
+pc-sample: float
+pc-skip-geometric:
+pc-tile:
+primary-band: str
+radiometric-calibration: str
+rerun: str
+rerun-all: 
+rerun-from: str
+resize-to: int
+rolling-shutter:
+rolling-shutter-readout: int
+sfm-algorithm: str
+skip-3dmodel:
+skip-band-alignment:
+skip-orthophoto:
+skip-report:
+sky-removal:
+sm-cluster: str
+sm-no-align:
+smrf-scalar: float
+smrf-slope: float
+smrf-threshold: float
+smrf-window: float
+split: int
+split-image-groups: str
+split-overlap: int
+texturing-data-term:
+texturing-keep-unseen-faces:
+texturing-outlier-removal-type: str
+texturing-single-material:
+texturing-skip-global-seam-leveling:
+texturing-skip-local-seam-leveling:
+texturing-tone-mapping: str
+tiles:
+time:
+use-3dmesh:
+use-exif:
+use-fixed-camera-params:
+use-hybrid-bundle-adjustment:
+verbose:
+
+
