@@ -1,0 +1,67 @@
+#!/bin/sh
+prefix=D:/a/ODM/ODM/SuperBuild/install
+exec_prefix=D:/a/ODM/ODM/SuperBuild/install/bin
+libdir=D:/a/ODM/ODM/SuperBuild/install/lib
+
+usage()
+{
+	cat <<EOF
+Usage: pdal-config [OPTIONS]
+Options:
+	[--cflags]
+	[--cxxflags]
+	[--defines]
+	[--includes]
+	[--libs]
+	[--plugin-dir]
+	[--version]
+EOF
+	exit $1
+}
+
+if test $# -eq 0; then
+	usage 1 1>&2
+fi
+
+case $1 in
+  --libs)
+    echo -LD:/a/ODM/ODM/SuperBuild/install/lib -lpdalcpp
+    ;;
+
+  --plugin-dir)
+    echo D:/a/ODM/ODM/SuperBuild/install/bin
+    ;;
+
+  --prefix)
+    echo ${prefix}
+     ;;
+
+  --ldflags)
+    echo -L${libdir}
+    ;;
+
+  --defines)
+    echo 
+    ;;
+
+  --includes)
+    echo -ID:/a/ODM/ODM/SuperBuild/install/include -ID:/a/ODM/ODM/venv/Lib/site-packages/osgeo/include/gdal -ID:/a/ODM/ODM/vcpkg/installed/x64-windows/include -ID:/a/ODM/ODM/SuperBuild/install/include
+    ;;
+
+  --cflags)
+    echo /DWIN32 /D_WINDOWS /W3
+    ;;
+
+  --cxxflags)
+    echo /DWIN32 /D_WINDOWS /W3 /GR /EHsc -std=c++11
+    ;;
+
+  --version)
+    echo 2.3.0
+    ;;
+
+  *)
+    usage 1 1>&2
+    ;;
+
+esac
