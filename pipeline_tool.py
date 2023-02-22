@@ -6,15 +6,18 @@ from mosaic import main_fn as pipeline_process
 import re
 import pprint
 import yaml
-import webbrowser
-
 
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
+
+
+
 
 class Stream(QtCore.QObject):
     newText = QtCore.pyqtSignal(str)
     def write(self, text):
         self.newText.emit(str(text))
+
+
 
 class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
     def __init__(self):
@@ -38,11 +41,6 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         # self.pipeline_process.readyRead.connect(self.dataReady)
         self.pipeline_process.started.connect(lambda: self.buttonStartProcessing.setEnabled(False))
         self.pipeline_process.finished.connect(lambda: self.buttonStartProcessing.setEnabled(True))
-
-        # menu bar links
-        self.actionPipeline.triggered.connect(lambda: self.openLink('pipeline'))
-        self.actionODM.triggered.connect(lambda: self.openLink('ODM'))
-        self.actionTree_Detection.triggered.connect(lambda: self.openLink('Deepforest'))
 
         # validators
         self.onlyInt = QIntValidator()
@@ -114,12 +112,6 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stdout__
     # --------------
-
-    def openLink(self, option):
-        URL_dict = {'pipeline': 'https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/en/latest/',
-                    'ODM': 'https://docs.opendronemap.org/',
-                    'Deepforest':'https://deepforest.readthedocs.io/en/latest/'}
-        webbrowser.open(URL_dict[option])
 
     def saveGeneralSettings(self, cfg):
         ''' General settings '''
@@ -341,9 +333,6 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
             cb.setChecked(cb.text()!='')
         self.l_matcher_neighbors.setText(str(cfg["ODM"]['matcher-neighbors']))
         self.l_orthophoto_resolution.setText(str(cfg["ODM"]['orthophoto-resolution']))
-
-
-    
         
 
     def startProcessingButtonClicked(self):
