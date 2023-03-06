@@ -40,15 +40,22 @@ Other dependencies are installed during step 2 below using Anaconda.
   conda env create -f environment.yml
 ~~~
 
+3. Activate the environment, run the GUI application
+~~~bash
+  conda activate integrated_rgb_thermal_ortho
+  python ./pipeline_tool.py
+~~~
+
 Note:
-The implementation requires PyTorch. 
+The implementation requires PyTorch with CUDA enabled for GPU acceleration. 
 On a GeForce RTX 3090 we used CUDA version 11.1.
 Depending on the GPU available (if any), the CUDA version you need to install may differ. 
 Refer to https://pytorch.org/ and https://en.wikipedia.org/wiki/CUDA for resolving version compatibility issues. 
+CPU-only processing is also an option.
 
 
 ## Citation
 If you use this code in your research, please consider citing our paper that proposed the integrated workflow.
-~~~tex
+`
 ...
-~~~
+`
