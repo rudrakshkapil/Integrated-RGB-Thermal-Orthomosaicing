@@ -777,7 +777,8 @@ def combined_mapping_pipeline(cfg):
         os.chdir("ODM")
         flags_dir = cfg["ODM"]
         flags_dir.pop('rerun-all')
-        flags_dir["rerun-from mvs_texturing"] = ''
+        # flags_dir["rerun-from mvs_texturing"] = ''
+        flags_dir['rerun-from odm_orthophoto'] = ''
         if optimize_disk_space:
             flags_dir["optimize-disk-space"] = ''
         flags = get_ODM_flags(flags_dir)
@@ -1033,7 +1034,7 @@ def tree_detection(cfg):
 
         # save image
         if save_image:
-            predicted_image = model.predict_tile(image=ortho, return_plot = True, patch_size=patch_size,patch_overlap=patch_overlap, color=(255,0,0), thresh=thresh, iou_threshold=iou_threshold)
+            predicted_image = model.predict_tile(image=rgb_ortho, return_plot = True, patch_size=patch_size,patch_overlap=patch_overlap, color=(255,0,0), thresh=thresh, iou_threshold=iou_threshold)
             predicted_image = cv2.cvtColor(predicted_image, cv2.COLOR_BGR2RGBA)
             cv2.imwrite(f"{output_dir}/predicted_image.jpeg", predicted_image)
 

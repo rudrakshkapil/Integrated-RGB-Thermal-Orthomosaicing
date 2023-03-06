@@ -219,7 +219,10 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
     hom_save_path = f'{date}/logs/log_homography_ngf.txt'
     two_way_loss = params.get('TWO_WAY_LOSS', True)
 
- 
+    # make log dir
+    if not os.path.exists(f'{date}/logs'):
+        os.makedirs(f'{date}/logs')
+
     # load image names
     I_files = [f"{I_dir}/{fname}" for fname in os.listdir(I_dir) if fname.endswith(".tif")]
     J_files = [f"{J_dir}/{fname.split('.')[0]}.{thermal_ext}" for fname in os.listdir(I_dir) if fname.endswith(".tif")]
@@ -344,6 +347,15 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
         J_imgs = np.array([cv2.imread(f"{thermal_texture_dir}/{fname}", cv2.IMREAD_UNCHANGED) for fname in tqdm(os.listdir(thermal_texture_dir))], dtype=np.float32)
 
         idx = 0
+        # save warped images
+        try: os.makedirs(save_dir) 
+        except: pass
+        save_file_names = os.listdir(thermal_texture_dir)
+
+        batch_size = 64
+        if batch_size % len(save_file_names) == 1:
+            batch_size += 1
+
         print("Saving warped images...")
         for i in tqdm(range(0, len(J_imgs), batch_size)):
             if i+batch_size < len(J_imgs):
@@ -358,10 +370,6 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
             J_w = PerspectiveWarping(J_t.unsqueeze(0), H , xy_lst[0][:,:,0], xy_lst[0][:,:,1]).squeeze()
             J_w = J_w.detach().cpu().numpy().astype(np.uint16)
 
-            # save warped images
-            try: os.makedirs(save_dir) 
-            except: pass
-            save_file_names = os.listdir(thermal_texture_dir)
             for j in tqdm(range(len(J_w)), leave=False):
                 # im = Image.fromarray((J_w[j]*65535).astype(np.uint16))
                 # im.save(f"{save_dir}/{save_file_names[idx]}.tif", compression='tiff_lzw')
