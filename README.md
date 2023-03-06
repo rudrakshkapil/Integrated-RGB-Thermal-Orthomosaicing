@@ -5,7 +5,7 @@ This repository contains the official code implementation for the paper ...
 Official documentation can be found at https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/
 
 
-![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](images/challenge.tiff.jpg?raw=true)
+![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](images/challenge.tiff?raw=true)
 
 
 
