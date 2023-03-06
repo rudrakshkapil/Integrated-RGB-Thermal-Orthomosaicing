@@ -9,9 +9,11 @@ The workflow uses intermediate outputs of RGB orthomosaicking to initialize the 
 For this to be done correctly, the RGB and thermal images are first co-registered using a intensity-based registration that is learned through a gradient descent-based optimization.
 The worflow is summarized in the following image. 
 
-![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](images/challenge.tiff?raw=true)
+![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](https://github.com/rudrakshkapil/Integrated-RGB-Thermal-Orthomosaicing/tree/main/images/challenge.tiff?raw=true)
 
 A more detailed figure of the steps involved in the workflow is shown below. 
+
+![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](https://github.com/rudrakshkapil/Integrated-RGB-Thermal-Orthomosaicing/tree/main/images/challenge.tiff?raw=true)
 
 
 The code is usable in scenarios where RGB and thermal images are simulataneously captured by a drone, such as with the DJI H20T drone and many other commercially available alternatives. 
