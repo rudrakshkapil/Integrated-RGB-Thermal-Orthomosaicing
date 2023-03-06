@@ -69,7 +69,7 @@ CPU-only processing is also an option.
 
 
 ## Citation
-If you use this code in your research, please consider citing our paper that proposed the integrated workflow.
+If you find this code helpful for your research, please consider citing our paper that proposed the integrated workflow.
 `
 ...
 `
