@@ -26,7 +26,7 @@ Official documentation for our code can be found at https://integrated-rgb-therm
 
 
 ## Run Locally (Windows) 
-This code is implemented in Python, and uses several other repositories/tools, which have been cloned already into the repository. These are (1) [DJI Thermal SDK](https://www.dji.com/ca/downloads/softwares/dji-thermal-sdk), (2) [OpenDroneMap](https://opendronemap.org/), (3) [R version 4.2.1](https://www.r-project.org/), and (4) [Bidirectional UTM-WGS84 converter for python](https://github.com/Turbo87/utm).  
+This code is implemented in Python, and uses several other repositories/tools, which have been cloned already into the repository. These are (1) [DJI Thermal SDK](https://www.dji.com/ca/downloads/softwares/dji-thermal-sdk), (2) [OpenDroneMap](https://opendronemap.org/), and (3) [Bidirectional UTM-WGS84 converter for python](https://github.com/Turbo87/utm).  
 Other required dependencies are installed during step 2 below using Anaconda. 
 
 1. Clone the project, enter directory  
