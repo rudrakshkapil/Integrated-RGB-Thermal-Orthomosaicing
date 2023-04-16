@@ -109,9 +109,10 @@ def MatrixExp(B,v,device):
     C = torch.sum(B*v,0)
     A = torch.eye(3).to(device)
     H = torch.eye(3).to(device)
-    for i in torch.arange(1,10):
+    for i in torch.arange(1,10): 
         A = torch.mm(A/i,C)
         H = H + A
+    
     return H    
 
 def PerspectiveWarping(I, H, xv, yv):
@@ -123,20 +124,22 @@ def PerspectiveWarping(I, H, xv, yv):
     J = F.grid_sample(I,torch.stack([xvt,yvt],2).unsqueeze(0),align_corners=False).squeeze()
     return J
 
-def multi_resolution_loss(I_lst, J_lst, xy_lst, homography_net, L, two_way_loss):
+def multi_resolution_loss(I_lst, J_lst, xy_lst, homography_net, L, two_way_loss, ngf_flag=True):
     '''
     Function to compute NGF multi-resolution loss (batch-wise)
     '''
     loss = 0.0
     for s in np.arange(L-1,-1,-1):
         Jw_ = PerspectiveWarping(J_lst[s].unsqueeze(0), homography_net(), xy_lst[s][:,:,0], xy_lst[s][:,:,1]).squeeze()
-        ng = NGF(I_lst[s],Jw_)
+        if len(Jw_.shape) == 2: Jw_ = Jw_.unsqueeze(0)
+        ng = NGF(I_lst[s],Jw_) if ngf_flag else ECC(I_lst[s],Jw_)
         loss += ng
 
         # inverse direction loss as well
         if two_way_loss:
             Iw_ = PerspectiveWarping(I_lst[s].unsqueeze(0), homography_net.inverse(), xy_lst[s][:,:,0], xy_lst[s][:,:,1]).squeeze()
-            ng2 = NGF(J_lst[s],Iw_)
+            if len(Iw_.shape) == 2: Iw_ = Iw_.unsqueeze(0)
+            ng2 = NGF(J_lst[s],Iw_) if ngf_flag else ECC(I_lst[s],Jw_)
             loss += ng2
     return loss
 
@@ -149,6 +152,8 @@ def gradient(I):
     w = I.shape[2]
         
     I = F.pad(I.unsqueeze(0),(1,1,1,1),'replicate').squeeze()
+    if len(I.shape)==2: # for bs = 1
+        I = I.unsqueeze(0)
     
     # central finite difference formula for Ix and Iy
     Ix = 0.5*(I[:,1:h+1,2:w+2]-I[:,1:h+1,0:w])
@@ -169,9 +174,34 @@ def NGF(I,J):
     Imag = torch.sqrt(Ix**2 + Iy**2 + 1e-8)
     Jmag = torch.sqrt(Jx**2 + Jy**2 + 1e-8)
     
+    
     # compute and return loss
-    ngf_loss = torch.mean((Ix/Imag - Jx/Jmag)**2) + torch.mean((Iy/Imag - Jy/Jmag)**2)
+    ngf_loss = torch.mean((Ix/Imag - Jx/Jmag)**2)
+    ngf_loss += torch.mean((Iy/Imag - Jy/Jmag)**2)
     return ngf_loss
+
+def ECC(I,J):
+    '''
+    Function to compute ECC loss between two images (batch implementation)
+    '''
+    bsz, h, w = I.shape
+
+    # get zero mean vectors
+    Izm = torch.reshape(I, (bsz, h*w)) - torch.mean(I, dim=(1,2)).unsqueeze(1)
+    Jzm = torch.reshape(J, (bsz, h*w)) - torch.mean(J, dim=(1,2)).unsqueeze(1)
+
+    # get l2 nroms
+    Izm_norm = torch.linalg.norm(Izm, dim=1, ord=2).unsqueeze(1)
+    Jzm_norm = torch.linalg.norm(Jzm, dim=1, ord=2).unsqueeze(1)
+
+    # Compute ECC from formula, 
+    ecc_loss = Izm/Izm_norm - Jzm/Jzm_norm 
+    ecc_loss = torch.linalg.norm(ecc_loss, dim=1, ord=2)**2
+    ecc_loss = ecc_loss**2
+
+    # mean loss over all batches and return
+    ecc_loss = torch.mean(ecc_loss)
+    return ecc_loss
 
 
 def hist_match1(source, template):
@@ -200,29 +230,26 @@ def hist_match1(source, template):
 
     return J
 
-
 def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, params={}, thermal_ext='tiff', dof='affine', eval=False):
-    # GPU # TODO: revert
     torch.cuda.empty_cache()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # extract required params
-    batch_size = params.get('BATCH_SIZE', 64)
-    hist_eq_opt = params.get('HIST_EQ', True)
+    batch_size = params.get('BATCH_SIZE', 64) 
+    hist_eq_opt = params.get('HIST_EQ', False)
     L = params.get('LEVELS', 11)
     downscale = params.get('DOWNSCALE', 1.5)
     learning_rate = params.get('LEARNING_RATE', 0.5e-2)
-    n_iters = params.get('N_ITERS', 400)
-    lower_bound = params.get('MI_LOWER_BOUND', 0.2)
-    search_all_images = params.get('SEARCH_ALL_IMAGES', True)
+    n_iters = params.get('N_ITERS', 200)
+    lower_bound = params.get('MI_LOWER_BOUND', 0.0)
+    search_all_images = params.get('SEARCH_ALL_IMAGES', False) 
+    systematic_sample = params.get('SYSTEMATIC_SAMPLE', True)
     verbose = params.get('VERBOSE', True)
     hom_save_path = f'{date}/logs/log_homography_ngf.txt'
     two_way_loss = params.get('TWO_WAY_LOSS', True)
+    ngf_flag = params.get('NGF_FLAG', True)
 
-    # make log dir
-    if not os.path.exists(f'{date}/logs'):
-        os.makedirs(f'{date}/logs')
-
+ 
     # load image names
     I_files = [f"{I_dir}/{fname}" for fname in os.listdir(I_dir) if fname.endswith(".tif")]
     J_files = [f"{J_dir}/{fname.split('.')[0]}.{thermal_ext}" for fname in os.listdir(I_dir) if fname.endswith(".tif")]
@@ -230,33 +257,35 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
 
     # splice first batchsize amount
     if not search_all_images:
-        I_files = I_files[:batch_size]
-        J_files = J_files[:batch_size]
+        # sequential or random - get appropriate indices
+        if systematic_sample:
+            rand_idxs= list(range(0, len(J_files), len(J_files)//batch_size))
+        else:
+            rand_idxs = list(np.random.choice(range(len(I_files)), batch_size, replace=False))
 
-    l_ = len(cv2.imread(J_files[0]).shape)
+        # sample
+        I_files = list(np.array(I_files)[rand_idxs])
+        J_files = list(np.array(J_files)[rand_idxs])
+
+        # make sure batch size as correct
+        if len(I_files) != batch_size:
+            I_files = I_files[:batch_size]
+            J_files = J_files[:batch_size]
+
     
 
     # hist equalization for both sets of images
     print("Loading original images (two sets)...")
-    if hist_eq_opt:
-        I_imgs = np.array([equalize_hist(img_as_ubyte(rgb2gray(io.imread(fname)))).astype(np.float32) for fname in tqdm(I_files)])
-        # if l_ == 2:
+    if hist_eq_opt: # histogram equalization
+        I_imgs = np.array([equalize_hist(rgb2gray(io.imread(fname))).astype(np.float32) for fname in tqdm(I_files)])
         J_imgs = np.array([equalize_hist(io.imread(fname)).astype(np.float32) for fname in tqdm(J_files)])
-        # else:
-        #     J_imgs = np.array([equalize_hist(img_as_ubyte(rgb2gray(io.imread(fname)))).astype(np.float32) for fname in tqdm(J_files)])
-    # normal -- load all images
-    else:
-        I_imgs = np.array([rgb2gray(io.imread(fname)).astype(np.float32) for fname in tqdm(I_files)])
-        # if l_ == 2:
-        J_imgs = np.array([io.imread(fname).astype(np.float32)/(256*256-1.0) for fname in tqdm(J_files)]) # TODO: remove 10
-        # else:
-        #     I_imgs = np.array([rgb2gray(io.imread(fname)).astype(np.float32) for fname in tqdm(J_files)])
-        # I_imgs = np.array([rgb2gray(io.imread(fname)).astype(np.float32) for fname in tqdm(I_files)])
-        # J_imgs = np.array([io.imread(fname).astype(np.float32)/(256*256-1.0) for fname in tqdm(J_files)])
 
-        # J_imgs = np.array([hist_match1((J_imgs[i]*256).astype(np.uint16), (I_imgs[i]*256).astype(np.uint16)) for i in range(len(I_imgs))])
-        # J_imgs = (J_imgs/256.0).astype(np.float32)
-        # print(J_imgs.shape)
+    else: # min-max normalization
+        I_imgs = np.array([rgb2gray(io.imread(fname)).astype(np.float32) for fname in tqdm(I_files)])
+        J_imgs = np.array([io.imread(fname).astype(np.float32) for fname in tqdm(J_files)]) 
+        
+        I_imgs[:] = (I_imgs[:] - np.amin(I_imgs, axis=(1,2)).reshape(-1,1,1)) / (np.amax(I_imgs, axis=(1,2)) - np.amin(I_imgs, axis=(1,2))).reshape(-1,1,1)
+        J_imgs[:] = (J_imgs[:] - np.amin(J_imgs, axis=(1,2)).reshape(-1,1,1)) / (np.amax(J_imgs, axis=(1,2)) - np.amin(J_imgs, axis=(1,2))).reshape(-1,1,1)
 
 
 
@@ -271,7 +300,7 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
                 zipped_list.append((k, MI_value))
 
         # sort indices by MI (only if > lower_bound and < upper bound)
-        zipped_list.sort(key=lambda a: a[1], reverse=True)
+        zipped_list.sort(key=lambda a: a[1], reverse=True) # TODO: Reverse true
 
         # reduce batch size if needed
         batch_size = min(batch_size, len(zipped_list))
@@ -280,6 +309,7 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
         # sample top MI images to use for computing homograpy
         I_imgs = I_imgs[batch_idxs]
         J_imgs = J_imgs[batch_idxs]
+        
     assert np.amax(I_imgs) <= 1.0 and np.amax(J_imgs) <= 1.0 # ensure data type correct
 
 
@@ -325,7 +355,7 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
     print("Training homography network...")
     for itr in tqdm(range(n_iters)):
         optimizer.zero_grad()
-        loss = multi_resolution_loss(I_lst, J_lst, xy_lst, homography_net, L, two_way_loss)
+        loss = multi_resolution_loss(I_lst, J_lst, xy_lst, homography_net, L, two_way_loss, ngf_flag)
         losses.append(loss.detach().cpu().numpy())
         if itr%10 == 0 and verbose:
             print("Itr:",itr,"Loss value:","{:.4f}".format(loss.item()))
@@ -335,16 +365,19 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
     losses = np.array(losses)
     plt.plot(losses)
     plt.title("Training loss for NGF")
-    plt.savefig(f"{date}/logs/loss_NGF.png")
 
     # save homography net
-    torch.save(homography_net.state_dict(), f'{date}/combined/ngf_homography_net.pth')
+    torch.save(homography_net.state_dict(), f'{date}/ngf_homography_net.pth')
+    homography_net = HomographyNet(device, dof).to(device)
 
     from PIL import Image
     with torch.no_grad():
         # get all images to warp (batch)
         print("Reading all original thermal images to warp...")
-        J_imgs = np.array([cv2.imread(f"{thermal_texture_dir}/{fname}", cv2.IMREAD_UNCHANGED) for fname in tqdm(os.listdir(thermal_texture_dir))], dtype=np.float32)
+        J_imgs = np.array([cv2.imread(f"{thermal_texture_dir}/{fname}", cv2.IMREAD_UNCHANGED) for fname in tqdm(os.listdir(thermal_texture_dir))])
+        dtype = J_imgs.dtype
+        J_imgs = J_imgs.astype(np.float32)
+        dtype2 = J_imgs.dtype
 
         idx = 0
         # save warped images
@@ -352,10 +385,10 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
         except: pass
         save_file_names = os.listdir(thermal_texture_dir)
 
+
         batch_size = 64
         if batch_size % len(save_file_names) == 1:
             batch_size += 1
-
         print("Saving warped images...")
         for i in tqdm(range(0, len(J_imgs), batch_size)):
             if i+batch_size < len(J_imgs):
@@ -364,23 +397,22 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
                 J_t = torch.tensor(J_imgs[i:]).to(device)
 
             # get homography matrix and warp entire batch
-            # homography_net = HomographyNet(device).to(device)
-            # homography_net.load_state_dict(f"{date}/homography_net.pth")
+            homography_net = HomographyNet(device, dof).to(device)
+            homography_net.load_state_dict(torch.load(f"2022_08_30/ngf_homography_net.pth")) # TODO: change to {date/}
+            homography_net.load_state_dict(torch.load(f"{date}/ngf_homography_net.pth")) # TODO: change to {date/}
             H = homography_net()
             J_w = PerspectiveWarping(J_t.unsqueeze(0), H , xy_lst[0][:,:,0], xy_lst[0][:,:,1]).squeeze()
-            J_w = J_w.detach().cpu().numpy().astype(np.uint16)
+            if dtype != np.float32:
+                J_w = J_w.detach().cpu().numpy().astype(np.uint16)
+            else:
+                J_w = J_w.detach().cpu().numpy().astype(np.float32)
+
 
             for j in tqdm(range(len(J_w)), leave=False):
-                # im = Image.fromarray((J_w[j]*65535).astype(np.uint16))
-                # im.save(f"{save_dir}/{save_file_names[idx]}.tif", compression='tiff_lzw')
-
                 cv2.imwrite(f"{save_dir}/{save_file_names[idx]}", J_w[j])
                 idx += 1
 
-        # write homography to file
-        with open(hom_save_path, 'w') as f:
-            H = H.detach().cpu().numpy()
-            f.write(str(H))
+
 
     if eval:
         # eval
@@ -428,3 +460,143 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
 
 
 
+
+def run():
+
+    exp_name = 'images_trial'
+    for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+        undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+        thermal_final_dir = f"{project}/thermal/images_resized"
+        thermal_texture_dir = f"{project}/thermal/images_resized"
+        save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+        params = {'NGF_FLAG':True}
+        dof = 'affine'
+        map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+    return
+
+    #  single res
+    # print("\n\n\nA")
+    # exp_name = 'images_ngf'
+    # for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+    #     undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+    #     thermal_final_dir = f"{project}/thermal/images_resized"
+    #     thermal_texture_dir = f"{project}/thermal/images_resized"
+    #     save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+    #     params = {'NGF_FLAG':True}
+    #     dof = 'affine'
+    #     map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+
+    # print("\n\n\nAA")
+    # exp_name = 'images_ecc'
+    # for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+    #     undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+    #     thermal_final_dir = f"{project}/thermal/images_resized"
+    #     thermal_texture_dir = f"{project}/thermal/images_resized"
+    #     save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+    #     params = {'NGF_FLAG':False}
+    #     dof = 'affine'
+    #     map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+
+
+
+
+    # #  single res
+    # print("\n\n\nAAAAA")
+    # exp_name = 'images_single_res'
+    # for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+    #     undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+    #     thermal_final_dir = f"{project}/thermal/images_resized"
+    #     thermal_texture_dir = f"{project}/thermal/images_resized"
+    #     save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+    #     params = {'LEVELS':1}
+    #     dof = 'affine'
+    #     map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+
+    # batch size
+    print("\n\n\nBBBBB")
+    for bsz in [32]:#[1, 4, 16]:
+        exp_name = f'images_bs={bsz}'
+        for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+            undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+            thermal_final_dir = f"{project}/thermal/images_resized"
+            thermal_texture_dir = f"{project}/thermal/images_resized"
+            save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+            params = {'BATCH_SIZE':bsz}
+            dof = 'affine'
+            map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+
+
+
+    # # perspective
+    # print("\n\n\nDDDDD")
+    # exp_name = 'images_perspective'
+    # for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+    #     undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+    #     thermal_final_dir = f"{project}/thermal/images_resized"
+    #     thermal_texture_dir = f"{project}/thermal/images_resized"
+    #     save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+    #     params = {}
+    #     dof = 'perspective'
+    #     map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+    #     # replace_img_names(save_dir, undist_rgb_ext, check=False)
+
+    
+    # # random vs systematic
+    # print("\n\n\nWEEEE")
+    # exp_name = 'images_random_select'
+    # for project in ['2022_07_20', '2022_07_26', '2022_08_09', '2022_08_17', '2022_08_30']:
+    #     undist_rgb_dir = f"{project}/combined/opensfm/undistorted/images_rgb"
+    #     thermal_final_dir = f"{project}/thermal/images_resized"
+    #     thermal_texture_dir = f"{project}/thermal/images_resized"
+    #     save_dir = f"{project}/combined/opensfm/undistorted/{exp_name}"
+    #     params = {'SEQUENTIAL_SELECT':False}
+    #     dof = 'affine'
+    #     map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=params, thermal_ext='tiff', dof=dof)
+    #     # replace_img_names(save_dir, undist_rgb_ext, check=False)
+
+
+
+if __name__ == "__main__":
+    run()
+
+    # from torchviz import make_dot
+    # date = '2022_08_30'
+    # device = 'cpu'
+    # dof = 'affine'
+
+    # homography_net = HomographyNet(device, dof).to(device)
+    # homography_net.load_state_dict(torch.load(f"{date}/ngf_homography_net.pth"))
+    # H = homography_net()
+
+    # make_dot(H, params=dict(homography_net.named_parameters()), show_attrs=True, show_saved=True).view('graphviz.gv')
+
+
+
+    
+
+    # # # fname = '2022_08_30/thermal/normalized/img_00000.tiff'
+    # # # img_eq1 = equalize_hist(io.imread(fname)).astype(np.float32)
+    # # fname = '2022_08_30/thermal/images/img_00000.tiff'
+    # # img_eq = equalize_hist(io.imread(fname)).astype(np.float32)
+    # # img = io.imread(fname).astype(np.float32)
+    # # print(np.min(img), np.max(img))
+    # # print(np.min(img_eq), np.max(img_eq))
+    # # print(img_eq, img)
+
+
+    # # plt.subplot(121), plt.plot(np.histogram(img_eq, bins=64)[0]), plt.imshow(img_eq, cmap='gray')
+    # # plt.subplot(122), plt.plot(np.histogram(img, bins=64)[0]), plt.imshow(img, cmap='gray')
+    # # plt.show()
+
+
+
+
+    # rgb_img = io.imread(fname).astype(np.float32)
+    # rgb_img[..., 0] = (rgb_img[..., 0] - np.min(rgb_img[..., 0])) / (np.max(rgb_img[..., 0]) - np.min(rgb_img[..., 0]))
+    # rgb_img[..., 1] = (rgb_img[..., 1] - np.min(rgb_img[..., 1])) / (np.max(rgb_img[..., 1]) - np.min(rgb_img[..., 1]))
+    # rgb_img[..., 2] = (rgb_img[..., 2] - np.min(rgb_img[..., 2])) / (np.max(rgb_img[..., 2]) - np.min(rgb_img[..., 2]))
+
+    # print(histogram_mutual_information(rgb_img[:,:,0], rgb_img[:,:,1] ))
+    # print(histogram_mutual_information(rgb_img[:,:,1], rgb_img[:,:,2] ))
+    # print(histogram_mutual_information(rgb_img[:,:,0], rgb_img[:,:,0] ))
+    pass

@@ -1,0 +1,9 @@
+*.h5
+*__pycache__*
+.DS_Store
+.RHistory
+current_release.csv
+*.pl
+*.pt
+tests/__pycache__
+*.wp*

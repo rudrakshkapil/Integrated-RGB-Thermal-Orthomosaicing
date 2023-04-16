@@ -19,7 +19,9 @@ struct \mbox{\hyperlink{structdirp__isp__pseudo__color__lut__t}{dirp\+\_\+isp\+\
 struct \mbox{\hyperlink{structdirp__enhancement__params__t}{dirp\+\_\+enhancement\+\_\+params\+\_\+t}}
 \begin{DoxyCompactList}\small\item\em Image enhancement parameteres structure definition. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structdirp__measurement__params__t}{dirp\+\_\+measurement\+\_\+params\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Customize temperature measurement parameteres structure definition. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Customize temperature measurement parameteres structure definition. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structdirp__measurement__params__range__t}{dirp\+\_\+measurement\+\_\+params\+\_\+range\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Range of temperature measurement parameteres structure definition. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
@@ -131,6 +133,8 @@ enum \mbox{\hyperlink{dirp__api_8h_a95e6a138a16a6e5f2e16706116332fa5}{dirp\+\_\+
 \begin{DoxyCompactList}\small\item\em Set custom temperature measurement parameters. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{dirp__api_8h_af241d00f78195ece6ef34d97bb5c48f3}{dllexport}} int32\+\_\+t \mbox{\hyperlink{dirp__api_8h_ad31b0b70de3fda2c57d42d323a3cb225}{dirp\+\_\+get\+\_\+measurement\+\_\+params}} (\mbox{\hyperlink{dirp__api_8h_afbb5c92b91edcf8ec72e83e253d1d247}{D\+I\+R\+P\+\_\+\+H\+A\+N\+D\+LE}} h, \mbox{\hyperlink{structdirp__measurement__params__t}{dirp\+\_\+measurement\+\_\+params\+\_\+t}} $\ast$measurement\+\_\+params)
 \begin{DoxyCompactList}\small\item\em Get orignial/custom temperature measurement parameters. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{dirp__api_8h_af241d00f78195ece6ef34d97bb5c48f3}{dllexport}} int32\+\_\+t \mbox{\hyperlink{dirp__api_8h_a62262b2b68e06d8e71e28df30508734b}{dirp\+\_\+get\+\_\+measurement\+\_\+params\+\_\+range}} (\mbox{\hyperlink{dirp__api_8h_afbb5c92b91edcf8ec72e83e253d1d247}{D\+I\+R\+P\+\_\+\+H\+A\+N\+D\+LE}} h, \mbox{\hyperlink{structdirp__measurement__params__range__t}{dirp\+\_\+measurement\+\_\+params\+\_\+range\+\_\+t}} $\ast$params\+\_\+range)
+\begin{DoxyCompactList}\small\item\em Get range of temperature measurement parameters that user can set. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{dirp__api_8h_af241d00f78195ece6ef34d97bb5c48f3}{dllexport}} void \mbox{\hyperlink{dirp__api_8h_a21baa00d0336467d6fce62ae0d583194}{dirp\+\_\+set\+\_\+verbose\+\_\+level}} (\mbox{\hyperlink{dirp__api_8h_a95e6a138a16a6e5f2e16706116332fa5}{dirp\+\_\+verbose\+\_\+level\+\_\+e}} level)
 \begin{DoxyCompactList}\small\item\em Set log print level. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{dirp__api_8h_af241d00f78195ece6ef34d97bb5c48f3}{dllexport}} void \mbox{\hyperlink{dirp__api_8h_a41d6e2253ea7649069a0d0dc96e530b8}{dirp\+\_\+set\+\_\+logger\+\_\+file}} (const char $\ast$file\+\_\+name)
@@ -496,6 +500,26 @@ Get orignial/custom temperature measurement parameters.
 \mbox{\texttt{ in}}  & {\em h} & D\+I\+RP A\+PI handle \\
 \hline
 \mbox{\texttt{ out}}  & {\em measurement\+\_\+params} & Temperature measurement parameters pointer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int return code \mbox{\hyperlink{dirp__api_8h_ae20843d099b85fc469be0483f524c14a}{dirp\+\_\+ret\+\_\+code\+\_\+e}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dirp__api_8h_a62262b2b68e06d8e71e28df30508734b}\label{dirp__api_8h_a62262b2b68e06d8e71e28df30508734b}} 
+\index{dirp\_api.h@{dirp\_api.h}!dirp\_get\_measurement\_params\_range@{dirp\_get\_measurement\_params\_range}}
+\index{dirp\_get\_measurement\_params\_range@{dirp\_get\_measurement\_params\_range}!dirp\_api.h@{dirp\_api.h}}
+\doxysubsubsection{\texorpdfstring{dirp\_get\_measurement\_params\_range()}{dirp\_get\_measurement\_params\_range()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{dirp__api_8h_af241d00f78195ece6ef34d97bb5c48f3}{dllexport}} int32\+\_\+t dirp\+\_\+get\+\_\+measurement\+\_\+params\+\_\+range (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{dirp__api_8h_afbb5c92b91edcf8ec72e83e253d1d247}{D\+I\+R\+P\+\_\+\+H\+A\+N\+D\+LE}}}]{h,  }\item[{\mbox{\hyperlink{structdirp__measurement__params__range__t}{dirp\+\_\+measurement\+\_\+params\+\_\+range\+\_\+t}} $\ast$}]{params\+\_\+range }\end{DoxyParamCaption})}
+
+
+
+Get range of temperature measurement parameters that user can set. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em h} & D\+I\+RP A\+PI handle \\
+\hline
+\mbox{\texttt{ out}}  & {\em params\+\_\+range} & Temperature measurement parameters range pointer \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

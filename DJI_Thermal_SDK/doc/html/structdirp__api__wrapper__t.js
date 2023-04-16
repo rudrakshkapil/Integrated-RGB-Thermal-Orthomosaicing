@@ -7,6 +7,7 @@ var structdirp__api__wrapper__t =
     [ "get_enhancement_params", "structdirp__api__wrapper__t.html#ac9407cc4628a6871c4edc8805e96d286", null ],
     [ "get_isotherm", "structdirp__api__wrapper__t.html#a0ce7391be635748246ba55643c7010a6", null ],
     [ "get_measurement_params", "structdirp__api__wrapper__t.html#a3c0facc1d285a940e8881904c9fc43d9", null ],
+    [ "get_measurement_params_range", "structdirp__api__wrapper__t.html#a507c6e41e62fd80fa7f8a6acd9e2d256", null ],
     [ "get_original_raw", "structdirp__api__wrapper__t.html#a0a011013fdae62b4bf5c91d497c1f847", null ],
     [ "get_pseudo_color", "structdirp__api__wrapper__t.html#a84b39cfcff773fca34c5a81173344ef9", null ],
     [ "get_pseudo_color_lut", "structdirp__api__wrapper__t.html#a7076701aed2b7cbf9aedad79f747bc22", null ],

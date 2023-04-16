@@ -1,7 +1,7 @@
 /*
  * Common sample for DJI Thermal SDK.
  *
- * @Copyright (c) 2020-2021 DJI. All rights reserved.
+ * @Copyright (c) 2020-2023 DJI. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@
 
 using namespace std;
 
-#define APP_VERSION "V1.2"
+#define APP_VERSION "V1.4"
 
 #define FSTREAM_OPEN_CHECK(fs, name, go) \
             { \
@@ -619,9 +619,10 @@ int32_t prv_measurement_config(DIRP_HANDLE dirp_handle)
 {
     int32_t ret = DIRP_SUCCESS;
     bool modified = false;
+    dirp_measurement_params_t measurement_params = {0};
+    dirp_measurement_params_range_t params_range = {0};
 
     /* Get original measurement parameters */
-    dirp_measurement_params_t measurement_params = {0};
     ret = dirp_get_measurement_params(dirp_handle, &measurement_params);
     if (DIRP_SUCCESS != ret)
     {
@@ -636,6 +637,19 @@ int32_t prv_measurement_config(DIRP_HANDLE dirp_handle)
         cout << "ERROR: call argparse_get_measurement_params failed" << endl;
         goto ERR_MEASUREMENT_CONFIG_RET;
     }
+
+    ret = dirp_get_measurement_params_range(dirp_handle, &params_range);
+    if (DIRP_SUCCESS != ret)
+    {
+        cout << "ERROR: call dirp_get_measurement_params_range failed" << endl;
+        goto ERR_MEASUREMENT_CONFIG_RET;
+    }
+    cout << "Measurement: get params range:" << endl;
+    cout << "distance: [" << params_range.distance.min << "," << params_range.distance.max <<"]"<< endl;
+    cout << "humidity: [" << params_range.humidity.min << "," << params_range.humidity.max <<"]"<< endl;
+    cout << "emissivity: [" << params_range.emissivity.min << "," << params_range.emissivity.max <<"]"<< endl;
+    cout << "reflection: [" << params_range.reflection.min << "," << params_range.reflection.max <<"]"<< endl;
+
     if (modified)
     {
         /* Set custom measurement parameters */

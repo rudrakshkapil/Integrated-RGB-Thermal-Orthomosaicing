@@ -1,0 +1,11 @@
+version: 2
+
+build:
+  image: latest
+
+python:
+  version: 3.7
+  install:
+    - requirements: dev_requirements.txt
+submodules:
+  include: all

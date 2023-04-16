@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">DJI Thermal SDK API
-   &#160;<span id="projectnumber">v1.2</span>
+   &#160;<span id="projectnumber">v1.4</span>
    </div>
    <div id="projectbrief">Infrared camera image processing and temperature measurement library API</div>
   </td>
@@ -126,6 +126,9 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdirp__measurement__params__t.html">dirp_measurement_params_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customize temperature measurement parameteres structure definition.  <a href="structdirp__measurement__params__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdirp__measurement__params__range__t.html">dirp_measurement_params_range_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range of temperature measurement parameteres structure definition.  <a href="structdirp__measurement__params__range__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -265,6 +268,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ad31b0b70de3fda2c57d42d323a3cb225"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dirp__api_8h.html#ad31b0b70de3fda2c57d42d323a3cb225">dirp_get_measurement_params</a> (<a class="el" href="dirp__api_8h.html#afbb5c92b91edcf8ec72e83e253d1d247">DIRP_HANDLE</a> h, <a class="el" href="structdirp__measurement__params__t.html">dirp_measurement_params_t</a> *measurement_params)</td></tr>
 <tr class="memdesc:ad31b0b70de3fda2c57d42d323a3cb225"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get orignial/custom temperature measurement parameters.  <a href="dirp__api_8h.html#ad31b0b70de3fda2c57d42d323a3cb225">More...</a><br /></td></tr>
 <tr class="separator:ad31b0b70de3fda2c57d42d323a3cb225"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62262b2b68e06d8e71e28df30508734b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dirp__api_8h.html#a62262b2b68e06d8e71e28df30508734b">dirp_get_measurement_params_range</a> (<a class="el" href="dirp__api_8h.html#afbb5c92b91edcf8ec72e83e253d1d247">DIRP_HANDLE</a> h, <a class="el" href="structdirp__measurement__params__range__t.html">dirp_measurement_params_range_t</a> *params_range)</td></tr>
+<tr class="memdesc:a62262b2b68e06d8e71e28df30508734b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get range of temperature measurement parameters that user can set.  <a href="dirp__api_8h.html#a62262b2b68e06d8e71e28df30508734b">More...</a><br /></td></tr>
+<tr class="separator:a62262b2b68e06d8e71e28df30508734b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21baa00d0336467d6fce62ae0d583194"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dirp__api_8h.html#a21baa00d0336467d6fce62ae0d583194">dirp_set_verbose_level</a> (<a class="el" href="dirp__api_8h.html#a95e6a138a16a6e5f2e16706116332fa5">dirp_verbose_level_e</a> level)</td></tr>
 <tr class="memdesc:a21baa00d0336467d6fce62ae0d583194"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set log print level.  <a href="dirp__api_8h.html#a21baa00d0336467d6fce62ae0d583194">More...</a><br /></td></tr>
 <tr class="separator:a21baa00d0336467d6fce62ae0d583194"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -739,6 +745,44 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">h</td><td>DIRP API handle </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">measurement_params</td><td>Temperature measurement parameters pointer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>int return code <a class="el" href="dirp__api_8h.html#ae20843d099b85fc469be0483f524c14a">dirp_ret_code_e</a> </dd></dl>
+
+</div>
+</div>
+<a id="a62262b2b68e06d8e71e28df30508734b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62262b2b68e06d8e71e28df30508734b">&#9670;&nbsp;</a></span>dirp_get_measurement_params_range()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> int32_t dirp_get_measurement_params_range </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="dirp__api_8h.html#afbb5c92b91edcf8ec72e83e253d1d247">DIRP_HANDLE</a>&#160;</td>
+          <td class="paramname"><em>h</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structdirp__measurement__params__range__t.html">dirp_measurement_params_range_t</a> *&#160;</td>
+          <td class="paramname"><em>params_range</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get range of temperature measurement parameters that user can set. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">h</td><td>DIRP API handle </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">params_range</td><td>Temperature measurement parameters range pointer </td></tr>
   </table>
   </dd>
 </dl>

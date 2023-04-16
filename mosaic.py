@@ -12,18 +12,22 @@ import numpy as np
 import yaml
 import torch
 from matplotlib import gridspec 
+import skimage
 
 from skimage.util.dtype import dtype_range
 from skimage.morphology import disk
 from skimage.filters import rank
 from skimage import img_as_ubyte
 from skimage import exposure
+from skimage import io 
+
+import rawpy 
 
 
 from utm_converter import utm
 from transform_NGF import map_all_images_using_NGF
 
-from deepforest import main
+from df_repo.deepforest import main
 
 DEBUG = False
 
@@ -127,13 +131,14 @@ def remove_original_tiffs(tiff_dir):
 def sort_tiff_names(tiff_names):
     tiff_names_temp = []
     for name in tiff_names:
+        ext = name.split('.')[-1]
         name_without_ext = os.path.splitext(name)[0]
 
         prefix = "_".join(name_without_ext.split('_')[:-1])
         index = name_without_ext.split('_')[-1]
         index = index.zfill(3)
 
-        tiff_names_temp.append(f'{prefix}_{index}.tiff')
+        tiff_names_temp.append(f'{prefix}_{index}.{ext}')
     
 
     sorted_indices = sorted(range(len(tiff_names_temp)), key=lambda k: tiff_names_temp[k])
@@ -216,17 +221,6 @@ def local_hist_eq(img_dir, save_dir, resize=False, new_size=True):
         new_img = np.array(new_img*(2e8-1), dtype=np.uint16)
 
 
-        ## Adaptive Equalization
-        # new_img = exposure.equalize_adapthist(img, clip_limit=0.03)
-        # print(sum(new_img < 0))
-        # new_img[new_img < 0] = 0
-        # new_img = np.array(new_img*(2e16-1), dtype=np.uint16)
-        # new_img = new_img.astype()
-        # print(new_img)
-
-
-        # if resize:
-        #     eq_img = cv2.resize(eq_img, (1622,1216))      # TODO: generalize size
         cv2.imwrite(f"{save_dir}/{img_names[idx]}", new_img) 
 
 
@@ -252,16 +246,19 @@ def min_max_norm_images(img_dir, save_dir, log_file, resize=False, size=None):
         norm_img = (img - min_) / (max_ - min_)
         norm_img = np.array(norm_img * 65535, dtype=np.uint16) # 16 bit image => 2^16 - 1 = 65535
         if resize:
-            norm_img = cv2.resize(norm_img, size)      
+            norm_img = cv2.resize(norm_img, size, cv2.INTER_CUBIC)      
         cv2.imwrite(f"{save_dir}/{img_names[idx]}", norm_img) 
 
         
 
 
-def convert_rjpeg_to_raw(exec_path, rjpeg_dir, thermal_dir, log_file, function="extract"):
+def convert_rjpeg_to_raw(exec_path, rjpeg_dir, thermal_dir, log_file, function="measure", humidity=70, emissivity=0.95, distance=25, reflection=25):
     # call SDK
-    # function = 'measure'
-    call =  f"{exec_path} -s {rjpeg_dir} -a {function} -o {thermal_dir}/img > {log_file}"
+    options = f'--emissivity {emissivity} --humidity {humidity} --distance {distance} --reflection {reflection} --verbose detail'
+    if function == 'measure':
+        call =  f"{exec_path} -s {rjpeg_dir} -a measure -o {thermal_dir}/img --measurefmt float32 {options} > {log_file}"
+    else:
+        call = f"{exec_path} -s {rjpeg_dir} -a {function} -o {thermal_dir}/img {options} > {log_file}"
     os.system(call)
 
     # create save dir
@@ -275,26 +272,48 @@ def convert_rjpeg_to_raw(exec_path, rjpeg_dir, thermal_dir, log_file, function="
         dst_path = f"{thermal_dir}/raw/{raw_name}"
         shutil.move(src=src_path, dst=dst_path)
 
+    # check if all images worked
+    before = len(os.listdir(rjpeg_dir))
+    after = len(os.listdir(f"{thermal_dir}/raw"))
+    assert before == after, "DJI SDK Issue! Not all images converted due to chosen settings. Change and retry."
 
 
-def rasterize_raw_to_tiffs(raw_dir, tiff_dir, ROOT_DIR):
-    R_EXE_PATH = f'{ROOT_DIR}/R/R-4.2.1/bin/Rscript.exe'
+from PIL import Image
+def rasterize_raw_to_tiffs(raw_dir, tiff_dir, ROOT_DIR, function='extract', img_size = (512,640)):
+    # load images in RGB format
+    img_names = [f"{raw_dir}/{fname}" for fname in os.listdir(raw_dir)]
+    sorted_indices = sort_tiff_names(img_names)
+    img_names = [img_names[i] for i in sorted_indices]
 
-    # create save dir
     if not os.path.exists(tiff_dir):
         os.makedirs(tiff_dir)
 
-    # call R script with arguments
-    num_images = len(os.listdir(raw_dir))
-    call = f"{R_EXE_PATH} rasterize.R {ROOT_DIR}/{raw_dir}/img_ {ROOT_DIR}/{tiff_dir}/img_ {num_images}"
-    os.system(call)
+    for idx, raw_name in enumerate(tqdm(img_names)):
+        img = np.fromfile(raw_name, dtype=np.float32)
+        img = img.reshape(img_size[0],img_size[1])
+    
+        out_path = f'{tiff_dir}/img_{idx}.tiff'
+        if idx == 0:
+            io.imshow(img)
+        io.imsave(out_path, img)
+    
+    # R_EXE_PATH = f'{ROOT_DIR}/R/R-4.2.1/bin/Rscript.exe'
+
+    # # create save dir
+    # if not os.path.exists(tiff_dir):
+    #     os.makedirs(tiff_dir)
+
+    # # call R script with arguments
+    # r_script = 'rasterize.R'# if function == 'extract' else 'rasterize_temp.R'
+    # num_images = len(os.listdir(raw_dir))
+    # call = f"{R_EXE_PATH} rasterize.R {ROOT_DIR}/{raw_dir}/img_ {ROOT_DIR}/{tiff_dir}/img_ {num_images}"
+    # os.system(call)
 
 
 def resize_images(img_dir, save_dir, size):
     # load images in RGB format
-    img_names = os.listdir(img_dir) # TODO: remove
+    img_names = os.listdir(img_dir) 
     imgs = np.asarray([cv2.imread(f"{img_dir}/{img_name}", cv2.IMREAD_UNCHANGED) for img_name in img_names])
-    print(img_dir, img_names[:20])
 
     # create directory if needed
     if not os.path.exists(save_dir):
@@ -302,7 +321,7 @@ def resize_images(img_dir, save_dir, size):
     
     # min max normalize and save 
     for idx,img in tqdm(enumerate(imgs), total=len(imgs)):
-        img = cv2.resize(img, size)
+        img = cv2.resize(img, size, cv2.INTER_CUBIC)
         cv2.imwrite(f"{save_dir}/{img_names[idx]}", img) 
 
 
@@ -345,7 +364,6 @@ def rename_tiff_with_leading_zeros(dir, ext='tiff', zeros=5):
 def denormalize_ortho(img_path, save_path, norm_log_file):
     # read image
     norm_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
-    print(np.amax(norm_img))
 
     # read min, max
     with open(norm_log_file, "r") as f:
@@ -402,7 +420,7 @@ def copy_subset(dir, save_dir, count=10):
 
             
 
-def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_texture_dir, img_index, eq_hist=True, dof='affine'):
+def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_texture_dir, img_index, eq_hist=False, dof='affine'):
 
     # get image names
     rgb_img_paths = [f"{rgb_dir}/{fname}" for fname in os.listdir(rgb_dir) if os.path.isfile(f"{rgb_dir}/{fname}")]
@@ -415,17 +433,27 @@ def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_tex
             thermal_img_path = thermal_img_paths[img_index]
 
             # load images, get shapes
-            thermal_img = cv2.imread(thermal_img_path, cv2.IMREAD_GRAYSCALE)
-            rgb_undistort_img = cv2.imread(rgb_img_path)
+            thermal_img = skimage.io.imread(thermal_img_path)
+            rgb_undistort_img = skimage.io.imread(rgb_img_path)
             hh,ww,_ = rgb_undistort_img.shape
 
             if thermal_img.shape != rgb_undistort_img.shape:
                 print("Resizing thermal image")
-                thermal_img = cv2.resize(thermal_img, (ww,hh))
+                thermal_img = skimage.transform.resize(thermal_img, (hh,ww))
 
             # hist eq for easier visualization
             if eq_hist:
+                print(thermal_img)
                 thermal_img = img_as_ubyte(exposure.equalize_hist(thermal_img))
+                print(thermal_img)
+            else:
+                print(thermal_img)
+                min_ = np.amin(thermal_img)
+                max_ = np.amax(thermal_img)
+                thermal_img = (thermal_img - min_) / (max_ - min_) * 255.0
+                thermal_img = thermal_img.astype(np.uint8)
+                print(thermal_img)
+                
 
             num_pts = 4 if dof == 'perspective' else 3
             # Get point correspondences(homography)
@@ -437,7 +465,7 @@ def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_tex
 
             fig2 = plt.figure(figsize=(8,6))
             plt.title(f"Select the same {num_pts} points on this RGB Image")
-            plt.imshow(rgb_undistort_img[:,:,::-1])
+            plt.imshow(rgb_undistort_img)
             pts1 = np.float32(plt.ginput(num_pts))
             plt.close(fig2)
             plt.close(fig1)
@@ -452,36 +480,43 @@ def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_tex
 
             # conver to torch tensors
             device = 'cpu' #'cuda:0' if torch.cuda.is_available() else 'cpu'
-            rgb_undistort_img = cv2.cvtColor(rgb_undistort_img, cv2.COLOR_RGB2GRAY)
+            # rgb_undistort_img = cv2.cvtColor(rgb_undistort_img, cv2.COLOR_RGB2GRAY)
             I_t = torch.tensor(rgb_undistort_img).to(device)
             J_t = torch.tensor(thermal_img).to(device)
             J_w = torch.tensor(projected).to(device)
-            print(I_t.shape, J_t.shape, J_w.shape)
 
             Ra = I_t.clone()
             Rb = I_t.clone()
             b = 120
             for i in torch.arange(0,I_t.shape[0]/b,1).int():
                 for j in torch.arange(i%2,np.floor(I_t.shape[1]/b),2).int():
-                    Rb[i*b:(i+1)*b,j*b:(j+1)*b] = J_t[i*b:(i+1)*b,j*b:(j+1)*b].clone()
-                    Ra[i*b:(i+1)*b,j*b:(j+1)*b] = J_w[i*b:(i+1)*b,j*b:(j+1)*b].clone()
+                    Rb[i*b:(i+1)*b,j*b:(j+1)*b] = J_t[i*b:(i+1)*b,j*b:(j+1)*b].clone().unsqueeze(-1)
+                    Ra[i*b:(i+1)*b,j*b:(j+1)*b] = J_w[i*b:(i+1)*b,j*b:(j+1)*b].clone().unsqueeze(-1)
+
+            print(Ra.shape, Rb.shape)
 
             # convert to RGB from BGR
             Ra = Ra.detach().cpu().numpy()
-            Ra = cv2.cvtColor(Ra, cv2.COLOR_BGR2RGB)
+            # Ra = cv2.cvtColor(Ra, cv2.COLOR_BGR2RGB)
             Rb = Rb.detach().cpu().numpy()
-            Rb = cv2.cvtColor(Rb, cv2.COLOR_BGR2RGB)
+            # Rb = cv2.cvtColor(Rb, cv2.COLOR_BGR2RGB)
 
             # plot
-            fig, axs = plt.subplots(1,2)
+            fig, axs = plt.subplots(2,2)
             fig.set_size_inches(14,7)
             plt.title('Manual Registration Performance. Check console for next steps.')
-            axs[0].imshow(Rb)
-            axs[0].set_title("Images Before Registration")
-            axs[0].axis('off')
-            axs[1].imshow(Ra)
-            axs[1].set_title("Images After Registration")
-            axs[1].axis('off')
+            axs[0,0].imshow(thermal_img, cmap='gray')
+            axs[0,0].set_title("Image Before Registration")
+            axs[0,0].axis('off')
+            axs[0,1].imshow(J_w.detach().cpu().numpy(), cmap='gray')
+            axs[0,1].set_title("Image After Registration")
+            axs[0,1].axis('off')
+            axs[1,0].imshow(Rb)
+            axs[1,0].set_title("Checkerboard Before Registration")
+            axs[1,0].axis('off')
+            axs[1,1].imshow(Ra)
+            axs[1,1].set_title("Checkerboard After Registration")
+            axs[1,1].axis('off')
             plt.show()
 
             # get user input for alignmnet
@@ -504,6 +539,11 @@ def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_tex
     with open(log_homography_file, "w") as f:
         f.write(str(M))
 
+   
+
+
+    
+
     ## Do it for all images
     # create save_dir directory if needed
     if not os.path.exists(save_dir):
@@ -515,7 +555,10 @@ def map_all_images_manually(project, rgb_dir, thermal_dir, save_dir, thermal_tex
 
     # loop over list and warp
     for idx, thermal_img in tqdm(enumerate(thermal_imgs), total=len(thermal_imgs)):
-        projected_img = cv2.warpAffine(thermal_img, M, (ww,hh), cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0,0,0))
+        if dof == 'affine':
+            projected_img = cv2.warpAffine(thermal_img, M, (ww,hh), cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0,0,0))
+        else:
+            projected_img = cv2.warpPerspective(thermal_img, M, (ww,hh), cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0,0,0))
         cv2.imwrite(f"{save_dir}/{img_names[idx]}", projected_img) 
     
 
@@ -627,7 +670,6 @@ def combined_mapping_pipeline(cfg):
         flags = get_ODM_flags(cfg["ODM"])
         second_part = f"{ROOT_DIR}/{project}/rgb" if ROOT_DIR not in project else f"{project}/rgb"
         call_1 = f".\\run.bat {flags} {second_part}"
-        print(call_1)
         os.system(call_1)
         os.chdir("..")
 
@@ -675,11 +717,16 @@ def combined_mapping_pipeline(cfg):
             if exec_path is None or (not os.path.exists(exec_path)):
                 exec_path = f".\\DJI_Thermal_SDK\\utility\\bin\\windows\\release_x64\\dji_irp_omp.exe"
             print(os.path.exists(exec_path))
-            convert_rjpeg_to_raw(exec_path, f'{project}/thermal/rjpegs', f'{project}/thermal', f"{project}/logs/log_binary-extraction.txt", function=function)
+            humidity = cfg["PREPROCESSING"]["THERMAL"]["H20T"]["HUMIDITY"]
+            distance = cfg["PREPROCESSING"]["THERMAL"]["H20T"]["DISTANCE"]
+            reflection = cfg["PREPROCESSING"]["THERMAL"]["H20T"]["TEMPERATURE"]
+            emissivity = cfg["PREPROCESSING"]["THERMAL"]["H20T"]["EMISSIVITY"]
+            convert_rjpeg_to_raw(exec_path, f'{project}/thermal/rjpegs', f'{project}/thermal', f"{project}/logs/log_binary-extraction.txt", function=function, humidity=humidity, emissivity=emissivity, distance=distance, reflection=reflection)
+
 
             ## rasterize binary data to TIFFs
             print("Converting raw to tiffs...")
-            rasterize_raw_to_tiffs(f'{project}/thermal/raw', f'{project}/thermal/images', ROOT_DIR) 
+            rasterize_raw_to_tiffs(f'{project}/thermal/raw', f'{project}/thermal/images', ROOT_DIR, function) 
         
 
         # for other drones, just copy over data to project/thermal/images (assuming preprocessed)
@@ -716,25 +763,23 @@ def combined_mapping_pipeline(cfg):
         undist_rgb_img = cv2.imread(undist_rgb_img_path)
         h,w,_ = undist_rgb_img.shape
 
-        # normalize
+        # normalize (not by default)
         if cfg["PREPROCESSING"]["THERMAL"]["NORMALIZE"]:
             print("Normalizing...")
             thermal_final_dir = f"{project}/thermal/normalized"
             try: shutil.rmtree(thermal_final_dir)
             except: pass            
             min_max_norm_images(f'{project}/thermal/images', thermal_final_dir, f"{project}/logs/log_normalization.txt", resize=True, size=(w,h))
-            # replace_img_names(thermal_final_dir, ext=thermal_ext)
 
             # prepare textures (correct size) -- check if need to denormalize
             if cfg["OUTPUT"]["DENORMALIZE"]:
                 resize_images(f'{project}/thermal/images', f'{project}/thermal/images_resized', size=(w,h))
-                # replace_img_names(f'{project}/thermal/images_resized', ext=thermal_ext)
                 thermal_texture_dir = f"{project}/thermal/images_resized"
             else:
                 thermal_texture_dir = f"{project}/thermal/normalized"
         else:
             thermal_final_dir = f"{project}/thermal/images_resized"
-            print("Resizing thermal images to RGB size...")
+            print("Resizing thermal images to RGB size...") 
             resize_images(f'{project}/thermal/images', f'{project}/thermal/images_resized', size=(w,h))
             thermal_texture_dir = f"{project}/thermal/images_resized"
 
@@ -758,6 +803,13 @@ def combined_mapping_pipeline(cfg):
             map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=NGF_params, thermal_ext=thermal_ext, dof=dof)
             replace_img_names(save_dir, undist_rgb_ext, check=False)
 
+        elif mode =="ECC":
+            ## ECC to find homography (same as above, just diff loss function)
+            ECC_params = cfg["HOMOGRAPHY"]["NGF_PARAMS"]
+            ECC_params['NGF_FLAG'] = False # only need to change this
+            map_all_images_using_NGF(undist_rgb_dir, thermal_final_dir, save_dir, thermal_texture_dir, project, params=ECC_params, thermal_ext=thermal_ext, dof=dof)
+            replace_img_names(save_dir, undist_rgb_ext, check=False)
+
         elif mode == "UNALIGNED":
             # unaligned (identity homography)
             shutil.copytree(thermal_texture_dir, save_dir)
@@ -777,8 +829,7 @@ def combined_mapping_pipeline(cfg):
         os.chdir("ODM")
         flags_dir = cfg["ODM"]
         flags_dir.pop('rerun-all')
-        # flags_dir["rerun-from mvs_texturing"] = ''
-        flags_dir['rerun-from odm_orthophoto'] = ''
+        flags_dir["rerun-from mvs_texturing"] = ''
         if optimize_disk_space:
             flags_dir["optimize-disk-space"] = ''
         flags = get_ODM_flags(flags_dir)
@@ -789,9 +840,8 @@ def combined_mapping_pipeline(cfg):
 
 
         ## move orthophoto
-        denorm_flag = '_non-norm' if (cfg["OUTPUT"]["DENORMALIZE"] or not cfg["PREPROCESSING"]["THERMAL"]["NORMALIZE"]) else ''
-        output_path = f'{output_dir}/orthophoto_combined_thermal_{mode}{denorm_flag}.tif'
-        shutil.move(f'{project}/combined/odm_orthophoto/odm_orthophoto.tif', output_path)
+        output_path = f'{output_dir}/orthophoto_combined_thermal.tif'
+        shutil.move(f'{project}/combined/odm_orthophoto/odm_orthophoto.tif', output_path) 
 
 
 
@@ -836,9 +886,9 @@ def thermal_mapping_pipeline(cfg):
         ## rasterize binary data to TIFFs (output dir dpepends on perprocessing options)
         print("Converting raw to tiffs...")
         if normalize or two_step:
-            rasterize_raw_to_tiffs(f'{project}/thermal_only/raw', f'{project}/thermal_only/tiffs', ROOT_DIR)                 
+            rasterize_raw_to_tiffs(f'{project}/thermal_only/raw', f'{project}/thermal_only/tiffs', ROOT_DIR, function)                 
         else:
-            rasterize_raw_to_tiffs(f'{project}/thermal_only/raw', f'{project}/thermal_only/images', ROOT_DIR) 
+            rasterize_raw_to_tiffs(f'{project}/thermal_only/raw', f'{project}/thermal_only/images', ROOT_DIR, function) 
 
         ## normalize
         if two_step:
@@ -1026,7 +1076,7 @@ def tree_detection(cfg):
         
         # load and convert types
         rgb_ortho = cv2.cvtColor(cv2.imread(rgb_ortho_path), cv2.COLOR_BGR2RGB)
-        thermal_ortho = cv2.resize(cv2.imread(thermal_ortho_path, cv2.IMREAD_UNCHANGED),(rgb_ortho.shape[1], rgb_ortho.shape[0]))
+        thermal_ortho = cv2.resize(cv2.imread(thermal_ortho_path, cv2.IMREAD_UNCHANGED),(rgb_ortho.shape[1], rgb_ortho.shape[0]), cv2.INTER_CUBIC)
 
         # run model
         predicted_raster = model.predict_tile(image=rgb_ortho, return_plot = False, patch_size=patch_size,patch_overlap=patch_overlap, color=(255,0,0), thresh=thresh, iou_threshold=iou_threshold)
@@ -1198,8 +1248,6 @@ def tree_detection(cfg):
                 i += 1
 
 
-def attack_stage_classification():
-    pass
 
             
             
@@ -1218,7 +1266,6 @@ def main_fn():
 
     with open(cfg_path, 'rb') as f:
         cfg = yaml.safe_load(f.read())
-    # pprint.pprint(cfg, width=1) # TODO remove this and exit
 
 
     # find root dir and stuff
@@ -1254,13 +1301,6 @@ def main_fn():
 
 
 if __name__ == "__main__":
-    # ## Combined Pipeline for all dates
-    # dates = [date for date in os.listdir('.') if date.startswith('2022')]
-    # for date in dates[2:]:
-    #     if '_09_15' in date or '_08_03' in date:
-    #         continue
-    #     print(f'\n\n\n-------------{date}-------------')
-    #     combined_mapping_pipeline(date)
+    main_fn() 
 
-    main_fn()
 

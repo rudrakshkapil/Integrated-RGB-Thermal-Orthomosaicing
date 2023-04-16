@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">DJI Thermal SDK API
-   &#160;<span id="projectnumber">v1.2</span>
+   &#160;<span id="projectnumber">v1.4</span>
    </div>
    <div id="projectbrief">Infrared camera image processing and temperature measurement library API</div>
   </td>
@@ -94,7 +94,7 @@ $(document).ready(function(){initNavTree('dirp__wrapper_8h_source.html','');});
 <a href="dirp__wrapper_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * DJI Thermal SDK wrapper header</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * @Copyright (c) 2020-2021 DJI. All rights reserved.</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * @Copyright (c) 2020-2023 DJI. All rights reserved.</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a copy</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * of this software and associated documentation files (the &quot;Software&quot;), to deal</span></div>
@@ -151,24 +151,26 @@ $(document).ready(function(){initNavTree('dirp__wrapper_8h_source.html','');});
 <div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#ac9407cc4628a6871c4edc8805e96d286">   58</a></span>&#160;    int32_t (*get_enhancement_params)           (<a class="code" href="dirp__wrapper_8h.html#a37f14d6e5f30e04f94950d57ca115d62">DIRPV_HANDLE</a>, <a class="code" href="structdirp__enhancement__params__t.html">dirp_enhancement_params_t</a> *);</div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#abce31b1e126e53cb9821868c34fe31bd">   59</a></span>&#160;    int32_t (*set_measurement_params)           (<a class="code" href="dirp__wrapper_8h.html#a37f14d6e5f30e04f94950d57ca115d62">DIRPV_HANDLE</a>, <span class="keyword">const</span> <a class="code" href="structdirp__measurement__params__t.html">dirp_measurement_params_t</a> *);</div>
 <div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a3c0facc1d285a940e8881904c9fc43d9">   60</a></span>&#160;    int32_t (*get_measurement_params)           (<a class="code" href="dirp__wrapper_8h.html#a37f14d6e5f30e04f94950d57ca115d62">DIRPV_HANDLE</a>, <a class="code" href="structdirp__measurement__params__t.html">dirp_measurement_params_t</a> *);</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a7076701aed2b7cbf9aedad79f747bc22">   61</a></span>&#160;    int32_t (*get_pseudo_color_lut)             (<a class="code" href="structdirp__isp__pseudo__color__lut__t.html">dirp_isp_pseudo_color_lut_t</a> *);</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a240224033575055d5fd7f32fad98f14d">   62</a></span>&#160;    void    (*set_verbose_level)                (<a class="code" href="dirp__api_8h.html#a95e6a138a16a6e5f2e16706116332fa5">dirp_verbose_level_e</a>);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;} <a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">   65</a></span>&#160;<span class="keyword">typedef</span> int32_t (*<a class="code" href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">func_dirp_vendor_get_api</a>)(<a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a> *);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<a class="code" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> int32_t <a class="code" href="dirp__wrapper_8h.html#a14d0d0028832428fb90036c0dd058543">dirp_vendor_get_api</a>(<a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a> *api);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _DIRP_WRAPPER_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a507c6e41e62fd80fa7f8a6acd9e2d256">   61</a></span>&#160;    int32_t (*get_measurement_params_range)     (<a class="code" href="dirp__wrapper_8h.html#a37f14d6e5f30e04f94950d57ca115d62">DIRPV_HANDLE</a>, <a class="code" href="structdirp__measurement__params__range__t.html">dirp_measurement_params_range_t</a>*);</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a7076701aed2b7cbf9aedad79f747bc22">   62</a></span>&#160;    int32_t (*get_pseudo_color_lut)             (<a class="code" href="structdirp__isp__pseudo__color__lut__t.html">dirp_isp_pseudo_color_lut_t</a> *);</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structdirp__api__wrapper__t.html#a240224033575055d5fd7f32fad98f14d">   63</a></span>&#160;    void    (*set_verbose_level)                (<a class="code" href="dirp__api_8h.html#a95e6a138a16a6e5f2e16706116332fa5">dirp_verbose_level_e</a>);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;} <a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">   66</a></span>&#160;<span class="keyword">typedef</span> int32_t (*<a class="code" href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">func_dirp_vendor_get_api</a>)(<a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a> *);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<a class="code" href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a> int32_t <a class="code" href="dirp__wrapper_8h.html#a14d0d0028832428fb90036c0dd058543">dirp_vendor_get_api</a>(<a class="code" href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a> *api);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _DIRP_WRAPPER_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="adirp__api_8h_html_af7f6158d43f3d55e4d89eedc8c665322"><div class="ttname"><a href="dirp__api_8h.html#af7f6158d43f3d55e4d89eedc8c665322">dirp_pseudo_color_e</a></div><div class="ttdeci">dirp_pseudo_color_e</div><div class="ttdoc">Palette types.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:76</div></div>
 <div class="ttc" id="adirp__wrapper_8h_html_a37f14d6e5f30e04f94950d57ca115d62"><div class="ttname"><a href="dirp__wrapper_8h.html#a37f14d6e5f30e04f94950d57ca115d62">DIRPV_HANDLE</a></div><div class="ttdeci">void * DIRPV_HANDLE</div><div class="ttdef"><b>Definition:</b> dirp_wrapper.h:37</div></div>
 <div class="ttc" id="adirp__api_8h_html_a95e6a138a16a6e5f2e16706116332fa5"><div class="ttname"><a href="dirp__api_8h.html#a95e6a138a16a6e5f2e16706116332fa5">dirp_verbose_level_e</a></div><div class="ttdeci">dirp_verbose_level_e</div><div class="ttdef"><b>Definition:</b> dirp_api.h:91</div></div>
+<div class="ttc" id="astructdirp__measurement__params__range__t_html"><div class="ttname"><a href="structdirp__measurement__params__range__t.html">dirp_measurement_params_range_t</a></div><div class="ttdoc">Range of temperature measurement parameteres structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:183</div></div>
 <div class="ttc" id="astructdirp__isotherm__t_html"><div class="ttname"><a href="structdirp__isotherm__t.html">dirp_isotherm_t</a></div><div class="ttdoc">Isotherm parameters structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:132</div></div>
 <div class="ttc" id="adirp__wrapper_8h_html_a14d0d0028832428fb90036c0dd058543"><div class="ttname"><a href="dirp__wrapper_8h.html#a14d0d0028832428fb90036c0dd058543">dirp_vendor_get_api</a></div><div class="ttdeci">dllexport int32_t dirp_vendor_get_api(dirp_api_wrapper_t *api)</div></div>
 <div class="ttc" id="astructdirp__isp__pseudo__color__lut__t_html"><div class="ttname"><a href="structdirp__isp__pseudo__color__lut__t.html">dirp_isp_pseudo_color_lut_t</a></div><div class="ttdoc">Pseudo color LUT array structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:150</div></div>
@@ -176,7 +178,7 @@ $(document).ready(function(){initNavTree('dirp__wrapper_8h_source.html','');});
 <div class="ttc" id="astructdirp__rjpeg__version__t_html"><div class="ttname"><a href="structdirp__rjpeg__version__t.html">dirp_rjpeg_version_t</a></div><div class="ttdoc">R-JPEG version structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:113</div></div>
 <div class="ttc" id="astructdirp__api__wrapper__t_html"><div class="ttname"><a href="structdirp__api__wrapper__t.html">dirp_api_wrapper_t</a></div><div class="ttdef"><b>Definition:</b> dirp_wrapper.h:39</div></div>
 <div class="ttc" id="adirp__api_8h_html_af241d00f78195ece6ef34d97bb5c48f3"><div class="ttname"><a href="dirp__api_8h.html#af241d00f78195ece6ef34d97bb5c48f3">dllexport</a></div><div class="ttdeci">#define dllexport</div><div class="ttdef"><b>Definition:</b> dirp_api.h:36</div></div>
-<div class="ttc" id="adirp__wrapper_8h_html_a7ea0bf19791cc36a3a83c74160db2fdb"><div class="ttname"><a href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">func_dirp_vendor_get_api</a></div><div class="ttdeci">int32_t(* func_dirp_vendor_get_api)(dirp_api_wrapper_t *)</div><div class="ttdef"><b>Definition:</b> dirp_wrapper.h:65</div></div>
+<div class="ttc" id="adirp__wrapper_8h_html_a7ea0bf19791cc36a3a83c74160db2fdb"><div class="ttname"><a href="dirp__wrapper_8h.html#a7ea0bf19791cc36a3a83c74160db2fdb">func_dirp_vendor_get_api</a></div><div class="ttdeci">int32_t(* func_dirp_vendor_get_api)(dirp_api_wrapper_t *)</div><div class="ttdef"><b>Definition:</b> dirp_wrapper.h:66</div></div>
 <div class="ttc" id="astructdirp__color__bar__t_html"><div class="ttname"><a href="structdirp__color__bar__t.html">dirp_color_bar_t</a></div><div class="ttdoc">Color bar parameters structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:141</div></div>
 <div class="ttc" id="adirp__api_8h_html"><div class="ttname"><a href="dirp__api_8h.html">dirp_api.h</a></div></div>
 <div class="ttc" id="astructdirp__resolution__t_html"><div class="ttname"><a href="structdirp__resolution__t.html">dirp_resolution_t</a></div><div class="ttdoc">The image size structure definition.</div><div class="ttdef"><b>Definition:</b> dirp_api.h:124</div></div>

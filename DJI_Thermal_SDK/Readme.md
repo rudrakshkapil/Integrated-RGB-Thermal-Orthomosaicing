@@ -23,8 +23,10 @@ To build sample codes for DJI Thermal SDK, the following environments are requir
 ### **Supported Infrared Cameras**
 
 - Zenmuse H20T
+- Zenmuse H20N
 - Zenmuse XT S
-- Mavic 2 Enterprise Advanced
+- M2EA (Mavic 2 Enterprise Advanced)
+- M30T
 
 ### **Run Official Sample Program**
 

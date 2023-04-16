@@ -1,7 +1,7 @@
 /*
  * DJI Thermal SDK wrapper header
  *
- * @Copyright (c) 2020-2021 DJI. All rights reserved.
+ * @Copyright (c) 2020-2023 DJI. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,7 @@ typedef struct
     int32_t (*get_enhancement_params)           (DIRPV_HANDLE, dirp_enhancement_params_t *);
     int32_t (*set_measurement_params)           (DIRPV_HANDLE, const dirp_measurement_params_t *);
     int32_t (*get_measurement_params)           (DIRPV_HANDLE, dirp_measurement_params_t *);
+    int32_t (*get_measurement_params_range)     (DIRPV_HANDLE, dirp_measurement_params_range_t*);
     int32_t (*get_pseudo_color_lut)             (dirp_isp_pseudo_color_lut_t *);
     void    (*set_verbose_level)                (dirp_verbose_level_e);
 } dirp_api_wrapper_t;

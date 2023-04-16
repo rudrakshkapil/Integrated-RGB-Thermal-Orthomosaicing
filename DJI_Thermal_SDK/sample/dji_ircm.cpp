@@ -1,7 +1,7 @@
 /*
  * Color mapping sample for DJI Thermal SDK.
  *
- * @Copyright (c) 2020-2021 DJI. All rights reserved.
+ * @Copyright (c) 2020-2023 DJI. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@
 
 using namespace std;
 
-#define APP_VERSION "V1.2"
+#define APP_VERSION "V1.4"
 
 #define FSTREAM_OPEN_CHECK(fs, name, go) \
             { \

@@ -2,8 +2,6 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from GUI_generated import Ui_MainWindow
 import sys
-from mosaic import main_fn as pipeline_process
-import re
 import pprint
 import yaml
 import webbrowser
@@ -96,6 +94,11 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         self.l_split.setValidator(self.onlyInt)
         self.l_split_overlap.setValidator(self.onlyInt)
 
+        self.lineDJIEmissivity.setValidator(self.onlyDouble)
+        self.lineDJIHumidity.setValidator(self.onlyDouble)
+        self.lineDJIDistance.setValidator(self.onlyDouble)
+        self.lineDJITemperature.setValidator(self.onlyDouble)
+
     # ---------------- For output stream of this file
         sys.stdout = Stream(newText=self.onUpdateText)
         sys.stderr = Stream(newText=self.onUpdateText)
@@ -174,6 +177,10 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         # Thermal
         cfg['PREPROCESSING']['THERMAL']['NORMALIZE'] = self.checkNormalize.isChecked()
         cfg['PREPROCESSING']['THERMAL']['H20T']['FUNCTION'] = self.listDJIFunction.currentItem().text()
+        cfg['PREPROCESSING']['THERMAL']['H20T']['EMISSIVITY'] = float(self.lineDJIEmissivity.text())
+        cfg['PREPROCESSING']['THERMAL']['H20T']['TEMPERATURE'] = float(self.lineDJITemperature.text())
+        cfg['PREPROCESSING']['THERMAL']['H20T']['DISTANCE'] = float(self.lineDJIDistance.text())
+        cfg['PREPROCESSING']['THERMAL']['H20T']['HUMIDITY'] = float(self.lineDJIHumidity.text())
         return cfg
 
     def saveHomographySettings(self, cfg):
@@ -191,7 +198,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         cfg['HOMOGRAPHY']['NGF_PARAMS']['N_ITERS'] = int(self.lineNGFNumIters.text())
         cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND'] = float(self.lineNGFMILowerBound.text())
         cfg['HOMOGRAPHY']['NGF_PARAMS']['TWO_WAY_LOSS'] = self.checkNGFTwoWayLoss.isChecked()
-        cfg['HOMOGRAPHY']['NGF_PARAMS']['SEARCH_ALL_IMAGES'] = self.checkNGFSearchAllImages.isChecked()
+        cfg['HOMOGRAPHY']['NGF_PARAMS']['SYSTEMATIC_SAMPLE'] = self.checkNGFSystematic.isChecked()
         
         # manual
         cfg['HOMOGRAPHY']['MANUAL_PARAMS']['IMAGE_PAIR_INDEX'] = int(self.lineManualImagePairIndex.text())
@@ -305,6 +312,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         self.checkOptimizeDiskSpace.setChecked(cfg["OUTPUT"]["OPTIMIZE_DISK_SPACE"])
 
         # input dirs - nothing
+        self.lineProjectDir.setText(cfg["DIR"]["PROJECT"])
 
         # Downstream tasks
         self.checkTDPerform.setChecked(cfg['STAGES']['TREE_DETECTION']['PERFORM'])
@@ -321,9 +329,13 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         self.checkNormalize.setChecked(cfg['PREPROCESSING']['THERMAL']['NORMALIZE'])
         self.lineRGBCropScale.setText(str(cfg['PREPROCESSING']['RGB']['SCALE']))
         self.listDJIFunction.setCurrentRow(['extract','measure'].index(cfg['PREPROCESSING']['THERMAL']['H20T']['FUNCTION']))
+        self.lineDJITemperature.setText(str(cfg['PREPROCESSING']['THERMAL']['H20T']['TEMPERATURE']))
+        self.lineDJIHumidity.setText(str(cfg['PREPROCESSING']['THERMAL']['H20T']['HUMIDITY']))
+        self.lineDJIDistance.setText(str(cfg['PREPROCESSING']['THERMAL']['H20T']['DISTANCE']))
+        self.lineDJIEmissivity.setText(str(cfg['PREPROCESSING']['THERMAL']['H20T']['EMISSIVITY']))
 
         # homography
-        self.listHomographyMode.setCurrentRow(['UNALIGNED','MANUAL','NGF'].index(cfg['HOMOGRAPHY']['MODE']))
+        self.listHomographyMode.setCurrentRow(['UNALIGNED','MANUAL','NGF', 'ECC'].index(cfg['HOMOGRAPHY']['MODE']))
         self.listDOF.setCurrentRow(['affine','perspective'].index(cfg['HOMOGRAPHY']['DOF']))
         self.checkManualHistEq.setChecked(cfg['HOMOGRAPHY']['MANUAL_PARAMS']['HIST_EQ'])
         self.lineManualImagePairIndex.setText(str(cfg['HOMOGRAPHY']['MANUAL_PARAMS']['IMAGE_PAIR_INDEX']))
@@ -335,7 +347,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         self.lineNGFLevels.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['LEVELS']))
         self.lineNGFNumIters.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['N_ITERS']))
         self.lineNGFMILowerBound.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND']))
-        self.checkNGFSearchAllImages.setChecked(cfg['HOMOGRAPHY']['NGF_PARAMS']['SEARCH_ALL_IMAGES'])
+        self.checkNGFSystematic.setChecked(cfg['HOMOGRAPHY']['NGF_PARAMS']['SYSTEMATIC_SAMPLE'])
 
         # ODM
         with open('resources/ODM_params.yml', 'rb') as f:
@@ -381,10 +393,6 @@ if __name__ == '__main__':
     with open("stylesheets/ConsoleStyle.qss",'r') as f: # ConsoleStyle or Ubuntu
         qss = f.read()
         app.setStyleSheet(qss)
-    MainWindow = QtWidgets.QMainWindow()
-    # MainWindow = QtWidgets.QWidget()
     ui = PipelineTool()
-    # ui.setupUi(MainWindow)
     ui.show()
-
     sys.exit(app.exec_())

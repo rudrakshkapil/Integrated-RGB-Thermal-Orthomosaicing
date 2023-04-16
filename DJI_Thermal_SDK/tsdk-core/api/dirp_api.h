@@ -1,7 +1,7 @@
 /*
  * DJI Thermal SDK API definition.
  *
- * @Copyright (c) 2020-2021 DJI. All rights reserved.
+ * @Copyright (c) 2020-2023 DJI. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -176,6 +176,16 @@ typedef struct {
                                                         radiated by the surrounding objects.
                                                         Value range is [-40.0~500.0] */
 } dirp_measurement_params_t;
+
+/**
+* @brief    Range of temperature measurement parameteres structure definition.
+*/
+typedef struct {
+    struct {float min; float max;} distance;    /**< The distance range to the target that user can set */
+    struct {float min; float max;} humidity;    /**< The humidity range to the target that user can set */
+    struct {float min; float max;} emissivity;  /**< The emissivity range to the target that user can set */
+    struct {float min; float max;} reflection;  /**< The reflection range to the target that user can set */
+} dirp_measurement_params_range_t;
 
 /**
  * @brief       Structure representing a handle on a DIRP instance
@@ -415,6 +425,15 @@ dllexport int32_t dirp_set_measurement_params(DIRP_HANDLE h, const dirp_measurem
  * @return      int                 return code @ref dirp_ret_code_e
  */
 dllexport int32_t dirp_get_measurement_params(DIRP_HANDLE h, dirp_measurement_params_t *measurement_params);
+
+/**
+ * @brief       Get range of temperature measurement parameters that user can set
+ *
+ * @param[in]   h                   DIRP API handle
+ * @param[out]  params_range        Temperature measurement parameters range pointer
+ * @return      int                 return code @ref dirp_ret_code_e
+ */
+dllexport int32_t dirp_get_measurement_params_range(DIRP_HANDLE h, dirp_measurement_params_range_t *params_range);
 
 /**
  * @brief       Set log print level
