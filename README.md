@@ -1,4 +1,4 @@
-Integrated RGB-Thermal Orthomosaicking Pipeline with Intensity-based Registration 
+Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images
 =======================================
 
 This repository contains the official code implementation for the paper ...
