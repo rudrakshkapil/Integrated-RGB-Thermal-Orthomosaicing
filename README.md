@@ -6,20 +6,13 @@ Official documentation can be found at https://integrated-rgb-thermal-orthomosai
 
 **Abstract:** Operational forest monitoring often requires fine-detail information in the form of an orthomosaic, created by stitching overlapping nadir images captured by aerial platforms, e.g., drones. RGB drone sensors are commonly used for low-cost, high-resolution imaging that is conducive to effective orthomosaicking, but only capture information in the visible part of the electromagnetic spectrum. Thermal sensors, on the other hand, are able to capture long-wave infrared radiation, making them useful for a variety of applications, e.g., early pest detection. However, these lower-resolution images suffer from reduced contrast and lack of descriptive features for successful orthomosaicking, leading to gaps or swirling artifacts in the orthomosaic. To tackle this issue, we propose an integrated workflow where simultaneously acquired RGB images are first used for producing the surface mesh of the site via structure from motion, while thermal images are only used to texture this mesh and yield a thermal orthomosaic. Prior to texturing, we align the pixel-wise geometry of RGB-thermal image pairs through an automated co-registration technique based on image gradients that leverages machine learning. Empirical results show that the thermal orthomosaic generated from our workflow (1) is of a high quality, (2) is geometrically aligned with the RGB orthomosaic, and (3) preserves radiometric information (i.e., absolute temperature) from the original thermal imagery. Additionally, we highlight the advantage of the resulting geometric alignment by easily accomplishing a sample downstream task -- tree crown detection from the thermal orthomosaic. Our final contribution is an open-source tool with a graphical user interface that implements our workflow to support future works.
 
-A figure summarizing the advantage of our proposed integrated workflow compared to existing thermal-only workflows is shown below.  
+The code is usable in scenarios where RGB and thermal images are simultaneously captured by a drone, such as with the DJI H20T multi-sensor instrument and many other commercially available alternatives. 
 
+A figure summarizing the advantage of our proposed integrated workflow compared to existing thermal-only workflows is shown below.
 ![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](images/challenge.jpg?raw=true)
 
 A more detailed figure of the steps involved in the workflow is shown below. 
-
 ![Summary of integrated workflow showing advantages over thermal-only workflows, specifically the lack of gaps and swirling artifacts](/images/pipeline.jpg?raw=true)
-
-
-The code is usable in scenarios where RGB and thermal images are simultaneously captured by a drone, such as with the DJI H20T multi-sensor instrument and many other commercially available alternatives. 
-
-
-Official documentation for our code can be found at https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/.
-
 
 
 
