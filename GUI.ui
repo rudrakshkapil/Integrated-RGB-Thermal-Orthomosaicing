@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1207</width>
-    <height>877</height>
+    <height>891</height>
    </rect>
   </property>
   <property name="palette">
@@ -429,7 +429,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Orthomosaicing Pipeline</string>
+   <string>Integrated RGB Thermal Orthomosaicking Pipeline</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -2067,7 +2067,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="4" column="0">
                <widget class="QLabel" name="label_15">
                 <property name="font">
                  <font>
@@ -2080,7 +2080,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="4" column="1">
                <widget class="QLineEdit" name="lineTDScoreThresh">
                 <property name="font">
                  <font>
@@ -2093,7 +2093,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_16">
                 <property name="font">
                  <font>
@@ -2106,7 +2106,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="6" column="1">
                <widget class="QLineEdit" name="lineTDPatchSize">
                 <property name="font">
                  <font>
@@ -2119,7 +2119,7 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
+              <item row="7" column="0">
                <widget class="QLabel" name="label_17">
                 <property name="font">
                  <font>
@@ -2132,7 +2132,7 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
+              <item row="7" column="1">
                <widget class="QLineEdit" name="lineTDPatchOverlap">
                 <property name="font">
                  <font>
@@ -2145,7 +2145,7 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="0">
+              <item row="8" column="0">
                <widget class="QLabel" name="label_21">
                 <property name="font">
                  <font>
@@ -2158,7 +2158,7 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
+              <item row="8" column="1">
                <widget class="QLineEdit" name="lineTDNumCrowns">
                 <property name="font">
                  <font>
@@ -2171,8 +2171,8 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_23">
+              <item row="12" column="0">
+               <widget class="QLabel" name="label_36">
                 <property name="font">
                  <font>
                   <family>Arial</family>
@@ -2180,11 +2180,48 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Save BBox Ortho</string>
+                 <string/>
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="5" column="0">
+               <widget class="QLabel" name="iOUThresholdLabel">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>IOU Threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="lineTDIOUThresh">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0.15</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
+               <spacer name="verticalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
                <widget class="QCheckBox" name="checkTDSaveBBoxOrtho">
                 <property name="font">
                  <font>
@@ -2200,7 +2237,20 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_23">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Save BBox Ortho</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
                <widget class="QLabel" name="label_24">
                 <property name="font">
                  <font>
@@ -2213,7 +2263,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
+              <item row="3" column="1">
                <widget class="QCheckBox" name="checkTDSaveTreeCrowns">
                 <property name="font">
                  <font>
@@ -2228,56 +2278,6 @@
                  <bool>true</bool>
                 </property>
                </widget>
-              </item>
-              <item row="10" column="0">
-               <widget class="QLabel" name="label_36">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="iOUThresholdLabel">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>IOU Threshold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="lineTDIOUThresh">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>0.15</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="0">
-               <spacer name="verticalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
              </layout>
             </item>
@@ -2694,114 +2694,10 @@
               <property name="fieldGrowthPolicy">
                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
               </property>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_25">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Histogram Equalization</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QCheckBox" name="checkNGFHistEq">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Enable</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
+              <property name="verticalSpacing">
+               <number>6</number>
+              </property>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_26">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Batch Size</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_27">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string># Levels</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_28">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Downscale Factor</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_29">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Learning Rate</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_32">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string># Iterations</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_30">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>MI Lower Bound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
                <widget class="QLabel" name="label_31">
                 <property name="font">
                  <font>
@@ -2814,7 +2710,7 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="1" column="1">
                <widget class="QCheckBox" name="checkNGFTwoWayLoss">
                 <property name="font">
                  <font>
@@ -2830,85 +2726,7 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="lineNGFMILowerBound">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>0.0</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="lineNGFNumIters">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>200</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="lineNGFLearningRate">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>0.005</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="lineNGFDownscale">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>1.5</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="lineNGFLevels">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>11</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="lineNGFBatchSize">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>64</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_46">
                 <property name="font">
                  <font>
@@ -2921,7 +2739,7 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
+              <item row="2" column="1">
                <widget class="QCheckBox" name="checkNGFSystematic">
                 <property name="font">
                  <font>
@@ -2934,6 +2752,165 @@
                 </property>
                 <property name="checked">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_25">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Histogram Equalization</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QCheckBox" name="checkNGFHistEq">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Enable</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_26">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Batch Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="lineNGFBatchSize">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>64</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_27">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string># Levels</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="lineNGFLevels">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>11</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_28">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Downscale Factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="lineNGFDownscale">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>1.5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_29">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Learning Rate</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="lineNGFLearningRate">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0.005</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_32">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string># Iterations</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="lineNGFNumIters">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>200</string>
                 </property>
                </widget>
               </item>
@@ -7993,10 +7970,6 @@
   <tabstop>checkTDPerform</tabstop>
   <tabstop>checkDenormalizeOrtho</tabstop>
   <tabstop>checkOptimizeDiskSpace</tabstop>
-  <tabstop>checkTDSaveBBoxOrtho</tabstop>
-  <tabstop>checkTDSaveTreeCrowns</tabstop>
-  <tabstop>checkNGFHistEq</tabstop>
-  <tabstop>checkNGFTwoWayLoss</tabstop>
   <tabstop>checkManualHistEq</tabstop>
   <tabstop>checkThermalTwoStep</tabstop>
   <tabstop>checkRGBCrop</tabstop>
@@ -8012,7 +7985,6 @@
   <tabstop>lineTDPatchOverlap</tabstop>
   <tabstop>lineTDNumCrowns</tabstop>
   <tabstop>lineRGBCropScale</tabstop>
-  <tabstop>lineNGFMILowerBound</tabstop>
   <tabstop>lineNGFNumIters</tabstop>
   <tabstop>lineNGFLearningRate</tabstop>
   <tabstop>lineNGFDownscale</tabstop>

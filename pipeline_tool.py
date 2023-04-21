@@ -63,7 +63,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
 
         self.lineNGFDownscale.setValidator(self.onlyDouble)
         self.lineNGFLearningRate.setValidator(self.onlyDouble)
-        self.lineNGFMILowerBound.setValidator(self.onlyDouble)
+        # self.lineNGFMILowerBound.setValidator(self.onlyDouble)
         self.lineNGFBatchSize.setValidator(self.onlyInt)
         self.lineNGFLevels.setValidator(self.onlyInt)
         self.lineNGFNumIters.setValidator(self.onlyInt)
@@ -196,7 +196,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         cfg['HOMOGRAPHY']['NGF_PARAMS']['DOWNSCALE'] = float(self.lineNGFDownscale.text())
         cfg['HOMOGRAPHY']['NGF_PARAMS']['LEARNING_RATE'] = float(self.lineNGFLearningRate.text())
         cfg['HOMOGRAPHY']['NGF_PARAMS']['N_ITERS'] = int(self.lineNGFNumIters.text())
-        cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND'] = float(self.lineNGFMILowerBound.text())
+        # cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND'] = float(self.lineNGFMILowerBound.text())
         cfg['HOMOGRAPHY']['NGF_PARAMS']['TWO_WAY_LOSS'] = self.checkNGFTwoWayLoss.isChecked()
         cfg['HOMOGRAPHY']['NGF_PARAMS']['SYSTEMATIC_SAMPLE'] = self.checkNGFSystematic.isChecked()
         
@@ -345,8 +345,8 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
         self.lineNGFDownscale.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['DOWNSCALE']))
         self.lineNGFLearningRate.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['LEARNING_RATE']))
         self.lineNGFLevels.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['LEVELS']))
-        self.lineNGFNumIters.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['N_ITERS']))
-        self.lineNGFMILowerBound.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND']))
+        self.lineNGFNumIters.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['N_ITERS'])) 
+        # self.lineNGFMILowerBound.setText(str(cfg['HOMOGRAPHY']['NGF_PARAMS']['MI_LOWER_BOUND'])) # deleted
         self.checkNGFSystematic.setChecked(cfg['HOMOGRAPHY']['NGF_PARAMS']['SYSTEMATIC_SAMPLE'])
 
         # ODM
