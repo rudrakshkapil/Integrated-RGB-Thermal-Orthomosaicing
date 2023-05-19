@@ -66,7 +66,7 @@ CPU-only processing is also an option.
 If you find this code helpful for your research, please consider citing our paper that proposed the integrated workflow.
 
 **BibTex:**
-`
+~~~LaTeX
 @Article{Kapil2023,
 AUTHOR = {Kapil, Rudraksh and Castilla, Guillermo and Marvasti-Zadeh, Seyed Mojtaba and Goodsman, Devin and Erbilgin, Nadir and Ray, Nilanjan},  
 TITLE = {Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images},  
@@ -79,9 +79,9 @@ URL = {https://www.mdpi.com/2072-4292/15/10/2653},
 ISSN = {2072-4292},  
 DOI = {10.3390/rs15102653},  
 }
-`
+~~~
 
 **AMA Style:**
-`
+~~~python
 Kapil R, Castilla G, Marvasti-Zadeh SM, Goodsman D, Erbilgin N, Ray N. Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images. Remote Sensing. 2023; 15(10):2653. https://doi.org/10.3390/rs15102653
-`
+~~~
