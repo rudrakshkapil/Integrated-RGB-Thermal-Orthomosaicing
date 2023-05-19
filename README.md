@@ -64,30 +64,20 @@ CPU-only processing is also an option.
 
 ## Citation
 If you find this code helpful for your research, please consider citing our paper that proposed the integrated workflow.
+
 **BibTex:**
 `
 @Article{Kapil2023,
-
-AUTHOR = {Kapil, Rudraksh and Castilla, Guillermo and Marvasti-Zadeh, Seyed Mojtaba and Goodsman, Devin and Erbilgin, Nadir and Ray, Nilanjan},
-
-TITLE = {Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images},
-
-JOURNAL = {Remote Sensing},
-
-VOLUME = {15},
-
-YEAR = {2023},
-
-NUMBER = {10},
-
-ARTICLE-NUMBER = {2653},
-
-URL = {https://www.mdpi.com/2072-4292/15/10/2653},
-
-ISSN = {2072-4292},
-
-DOI = {10.3390/rs15102653}
-
+AUTHOR = {Kapil, Rudraksh and Castilla, Guillermo and Marvasti-Zadeh, Seyed Mojtaba and Goodsman, Devin and Erbilgin, Nadir and Ray, Nilanjan},  
+TITLE = {Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images},  
+JOURNAL = {Remote Sensing},  
+VOLUME = {15},  
+YEAR = {2023},  
+NUMBER = {10},  
+ARTICLE-NUMBER = {2653},  
+URL = {https://www.mdpi.com/2072-4292/15/10/2653},  
+ISSN = {2072-4292},  
+DOI = {10.3390/rs15102653},  
 }
 `
 
