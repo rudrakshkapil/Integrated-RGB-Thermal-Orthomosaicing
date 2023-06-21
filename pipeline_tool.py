@@ -242,7 +242,7 @@ class PipelineTool(Ui_MainWindow, QtWidgets.QMainWindow):
             find_param = param.replace('-','_')
             cb = self.findChild(QtWidgets.QCheckBox, f"c_{find_param}")
             if cb is None:
-                print(param)
+                print(param, 'child is none')
                 exit()
             if not cb.isChecked():
                 continue
@@ -393,6 +393,8 @@ if __name__ == '__main__':
     with open("stylesheets/ConsoleStyle.qss",'r') as f: # ConsoleStyle or Ubuntu
         qss = f.read()
         app.setStyleSheet(qss)
+    print('a')
+    print('a')
     ui = PipelineTool()
     ui.show()
     sys.exit(app.exec_())

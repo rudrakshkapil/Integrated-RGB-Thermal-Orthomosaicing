@@ -1,0 +1,64 @@
+CAMERA: H20T
+DIR:
+  H20T_DATA: auto
+  PROJECT: 2022_08_30_test
+  RGB: ''
+  THERMAL: ''
+HOMOGRAPHY:
+  DOF: affine
+  MANUAL_PARAMS:
+    HIST_EQ: false
+    IMAGE_PAIR_INDEX: 0
+  MODE: NGF
+  NGF_PARAMS:
+    BATCH_SIZE: 64
+    DOWNSCALE: 1.5
+    HIST_EQ: false
+    LEARNING_RATE: 0.005
+    LEVELS: 11
+    MI_LOWER_BOUND: 0.0
+    N_ITERS: 200
+    SEARCH_ALL_IMAGES: false
+    SYSTEMATIC_SAMPLE: true
+    TWO_WAY_LOSS: true
+ODM:
+  build-overviews: ''
+  ignore-gsd: ''
+  matcher-neighbors: 4
+  orthophoto-resolution: 10.0
+  rerun-all: ''
+  time: ''
+  use-exif: ''
+OUTPUT:
+  DENORMALIZE: false
+  OPTIMIZE_DISK_SPACE: false
+PREPROCESSING:
+  RGB:
+    CROP: true
+    SCALE: 5.0
+  THERMAL:
+    H20T:
+      DISTANCE: 25.0
+      EMISSIVITY: 0.95
+      FUNCTION: measure
+      HUMIDITY: 70.0
+      TEMPERATURE: 23.0
+    NORMALIZE: false
+STAGES:
+  COMBINED_STAGES:
+    STAGE_1: false
+    STAGE_2: false
+    STAGE_3: false
+    STAGE_4: false
+  METHOD: combined
+  THERMAL:
+    TWO_STEP: true
+  TREE_DETECTION:
+    IOU_THRESH: 0.15
+    N_TOP: 9
+    PATCH_OVERLAP: 0.5
+    PATCH_SIZE: 500
+    PERFORM: true
+    SAVE_BBOX_IMAGE: true
+    SAVE_TREE_CROWNS: true
+    SCORE_THRESH: 0.5
