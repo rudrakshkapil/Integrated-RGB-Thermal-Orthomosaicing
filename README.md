@@ -30,28 +30,30 @@ Other required dependencies are installed during step 2 below using Anaconda.
   cd IntegratedOrtho
 ~~~
 
-2. Install dependencies through anaconda, creating a new environment called 
+2. Download the required virtual environment for ODM from [this link](https://drive.google.com/drive/folders/1s9TMOsA4KC155mleJuzGay14aj-xPTyD?usp=sharing) and place it into `IntegratedOrtho/ODM`.
+
+3. Install dependencies through anaconda, creating a new environment called 
 ~~~bash  
   conda env create -f environment.yml
 ~~~
 
-3. Download the sample dataset (or place your own) into the current directory. The sample dataset can be found as a zipped file at https://doi.org/10.5281/zenodo.7662405.
+4. Download the sample dataset (or place your own) into the current directory. The sample dataset can be found as a zipped file at https://doi.org/10.5281/zenodo.7662405.
   - Refer to [documentation](https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/) for details on correctly organizing your own data.
 
-4. Activate the environment, run the GUI application
+5. Activate the environment, run the GUI application
 ~~~bash
   conda activate integrated_rgb_thermal_ortho
   python ./pipeline_tool.py
 ~~~
 
-5. Within the GUI, specify the name of the directory in the Input panel on the left, i.e. `2022_08_30`. Also specify other settings as needed (refer to [documentation](https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/) for more details).
+6. Within the GUI, specify the name of the directory in the Input panel on the left, i.e. `2022_08_30`. Also specify other settings as needed (refer to [documentation](https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/) for more details).
   - Default settings are provided in `/configs/default.yml` and pre-loaded into the GUI.
   - Current settings are saved into `/configs/combined.yml`.
   - RGB-only and thermal-only default settings are also provided in `/configs`. 
 
-6. Click the `Save Settings` button in the GUI, followed by the `Start Processing` button. 
+7. Click the `Save Settings` button in the GUI, followed by the `Start Processing` button. 
 
-7. Output orthomsaics (RGB and thermal) will be saved in `<project>/output`
+8. Output orthomsaics (RGB and thermal) will be saved in `<project>/output`
 
 
 Note:
