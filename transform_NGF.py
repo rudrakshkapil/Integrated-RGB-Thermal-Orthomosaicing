@@ -398,7 +398,7 @@ def map_all_images_using_NGF(I_dir, J_dir, save_dir, thermal_texture_dir, date, 
 
             # get homography matrix and warp entire batch
             homography_net = HomographyNet(device, dof).to(device)
-            homography_net.load_state_dict(torch.load(f"2022_08_30/ngf_homography_net.pth")) # TODO: change to {date/}
+            # homography_net.load_state_dict(torch.load(f"2022_08_30/ngf_homography_net.pth")) # TODO: change to {date/}
             homography_net.load_state_dict(torch.load(f"{date}/ngf_homography_net.pth")) # TODO: change to {date/}
             H = homography_net()
             J_w = PerspectiveWarping(J_t.unsqueeze(0), H , xy_lst[0][:,:,0], xy_lst[0][:,:,1]).squeeze()
