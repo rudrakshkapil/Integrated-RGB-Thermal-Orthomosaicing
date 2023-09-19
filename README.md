@@ -1,7 +1,7 @@
 Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images
 =======================================
 
-This repository contains the official code implementation for the paper titled, "Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images", published as a research article in the MDPI Remote Sensing Collection, "Feature Paper Special Issue on Forest Remote Sensing". 
+This repository contains the official code implementation for the paper titled, "Orthomosaicking Thermal Drone Images of Forests via Simultaneously Acquired RGB Images", published as a featured research article in the MDPI Remote Sensing Journal.
 
 The paper can be found [at this link on the MDPI website](https://www.mdpi.com/2072-4292/15/10/2653).<br>
 Official documentation can be found at https://integrated-rgb-thermal-orthomosaicing.readthedocs.io/ (under construction... for now, feel free to reach out at rkapil@ualberta.ca for any help with setting up and running the tool, thanks for your patience!)
