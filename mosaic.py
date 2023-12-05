@@ -136,7 +136,7 @@ def sort_tiff_names(tiff_names):
 
         prefix = "_".join(name_without_ext.split('_')[:-1])
         index = name_without_ext.split('_')[-1]
-        index = index.zfill(3)
+        index = index.zfill(4) # NOTE: increase this to 5 if you have > 9999 images 
 
         tiff_names_temp.append(f'{prefix}_{index}.{ext}')
     
