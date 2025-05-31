@@ -20,7 +20,7 @@ A more detailed figure of the steps involved in the workflow is shown below.
 
 ## Run Locally (Windows) 
 
-**NOTE:** If you face issues in setting up the local environemnt, please check the instructions [here](https://github.com/kademathers/Fix_To_Integrated-RGB-Thermal-Orthomosaicing).
+#### **NOTE:** If you face issues in setting up the local environment, please check the instructions [here](https://github.com/kademathers/Fix_To_Integrated-RGB-Thermal-Orthomosaicing).
 
 This code is implemented in Python, and uses several other repositories/tools, which have been cloned already into the repository. These are (1) [DJI Thermal SDK](https://www.dji.com/ca/downloads/softwares/dji-thermal-sdk), (2) [OpenDroneMap](https://opendronemap.org/), and (3) [Bidirectional UTM-WGS84 converter for python](https://github.com/Turbo87/utm).  
 Other required dependencies are installed during step 2 below using Anaconda. 
